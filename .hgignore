@@ -1,0 +1,11 @@
+(^|/)\.bzr($|/)
+(^|/)\.hg($|/)
+(^|/)\.hgtags($|/)
+docs/build
+build/
+dist/
+^.+\.pyc$
+^.+\.swp$
+lib/
+ext/html5-boilerplate/
+.pida-metadata
