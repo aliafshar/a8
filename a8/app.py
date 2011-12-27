@@ -30,5 +30,3 @@ class Abominade(object):
     """Stop a8"""
     self.vim.stop()
 
-
-

@@ -52,6 +52,7 @@ class ApplicationWindow(delegates.WindowView):
     self.hpaned.pack1(self.plugins.widget)
     self.plugins.add_tab(self.model.buffers)
     self.plugins.add_tab(self.model.files)
+    self.plugins.add_tab(self.model.terminals)
     self.vpaned.pack1(self.model.vim.widget, resize=True, shrink=False)
     self.vpaned.pack2(self.model.terminals.book, resize=False, shrink=False)
     self.widget.set_title('Abominade loves you.')

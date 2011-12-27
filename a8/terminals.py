@@ -140,6 +140,14 @@ class TerminalConfiguration(object):
 class TerminalView(delegates.SlaveView):
   """A8 Terminal Emulator."""
 
+  @property
+  def markup(self):
+    return '<b>{0}</b> (<b>{1}</b>)\n{2}'.format(
+      os.path.basename(self.cwd),
+      self.pid,
+      os.path.dirname(self.cwd)
+    )
+
   def create_ui(self):
     self.pid = None
     self.cwd = None
@@ -401,6 +409,8 @@ class TerminalView(delegates.SlaveView):
 class TerminalManager(lists.ListView):
   """Tabs containing terminals."""
 
+  LABEL = 'Terminals'
+
   def create_ui(self):
     lists.ListView.create_ui(self)
     self.book = gtk.Notebook()
@@ -410,6 +420,7 @@ class TerminalManager(lists.ListView):
     self.book.append_page(delegate.widget, delegate.create_tab_widget())
     self.book.set_current_page(self.book.page_num(delegate.widget))
     self.book.show_all()
+    self.items.append(delegate)
 
   def remove_tab(self, delegate):
     self.book.remove_page(self.book.page_num(delegate.widget))
@@ -418,3 +429,6 @@ class TerminalManager(lists.ListView):
     t = TerminalView(self.model)
     t.execute(argv, env, cwd)
     self.add_tab(t)
+
+  def on_items__item_activated(self, objectlist, item):
+    self.book.set_current_page(self.book.page_num(item.widget))

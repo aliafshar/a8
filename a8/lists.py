@@ -15,7 +15,7 @@ class ListView(delegates.SlaveView):
 
   LABEL   = 'Unnamed'
   ICON    = 'application_xp_terminal.png'
-  COLUMNS = [objectlist.Column('markup')]
+  COLUMNS = [objectlist.Column('markup', use_markup=True)]
 
   def create_ui(self):
     """Create the user interface."""
