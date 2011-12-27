@@ -14,16 +14,20 @@ from pygtkhelpers.ui import objectlist
 from a8 import resources, lists
 
 
-class Buffer(object):
+class Buffer(lists.ListItem):
   """Loaded buffer."""
+
+  MARKUP_TEMPLATE = '<b>{0}</b>\n<span size="xx-small">{1}</span>'
+
   def __init__(self, filename):
     self.filename = filename
+    self.dirname = os.path.dirname(filename)
     self.basename = os.path.basename(filename)
 
   @property
-  def markup(self):
+  def markup_args(self):
     """Display in the buffer list."""
-    return self.basename
+    return (self.basename, self.dirname)
 
 
 class BufferManager(lists.ListView):

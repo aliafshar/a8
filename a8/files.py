@@ -19,10 +19,12 @@ HIDDEN_MASKS = [
 HIDDEN_PATTERN = re.compile('|'.join(HIDDEN_MASKS))
 
 
-class File(object):
+class File(lists.ListItem):
 
   folder_pixbuf = resources.load_icon('folder.png').get_pixbuf()
   file_pixbuf = resources.load_icon('page_white.png').get_pixbuf()
+
+  MARKUP_TEMPLATE = '{0}'
 
   def __init__(self, filename):
     self.filename = filename
@@ -33,8 +35,8 @@ class File(object):
     self.hidden = HIDDEN_PATTERN.match(self.basename)
 
   @property
-  def markup(self):
-    return self.basename
+  def markup_args(self):
+    return (self.basename,)
 
   @property
   def icon(self):

@@ -137,12 +137,14 @@ class TerminalConfiguration(object):
       raise KeyError('bad configuration key "%s".' % option)
 
 
-class TerminalView(delegates.SlaveView):
+class TerminalView(delegates.SlaveView, lists.ListItem):
   """A8 Terminal Emulator."""
 
+  MARKUP_TEMPLATE = '<b>{0}</b> (<b>{1}</b>)\n<span size="xx-small">{2}</span>'
+
   @property
-  def markup(self):
-    return '<b>{0}</b> (<b>{1}</b>)\n{2}'.format(
+  def markup_args(self):
+    return (
       os.path.basename(self.cwd),
       self.pid,
       os.path.dirname(self.cwd)

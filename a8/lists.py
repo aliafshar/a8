@@ -4,11 +4,27 @@
 
 """Buffer list."""
 
+import cgi
+
 import gtk
 from pygtkhelpers import delegates
 from pygtkhelpers.ui import objectlist
 
 from a8 import resources
+
+
+class ListItem(object):
+
+  MARKUP_TEMPLATE = ''
+
+  @property
+  def markup_args(self):
+    return ()
+
+  @property
+  def markup(self):
+    return self.MARKUP_TEMPLATE.format(
+      *(cgi.escape(str(i)) for i in self.markup_args))
 
 
 class ListView(delegates.SlaveView):
