@@ -10,6 +10,9 @@ from pygtkhelpers import delegates
 from a8 import shortcuts, resources
 
 
+gtk.window_set_default_icon(resources.load_icon('a8.png').get_pixbuf())
+
+
 class SplashScreen(object):
   """Splash screen."""
   def __init__(self):
@@ -50,8 +53,9 @@ class ApplicationWindow(delegates.WindowView):
     self.hpaned.set_position(200)
     self.plugins = PluginTabs()
     self.hpaned.pack1(self.plugins.widget)
-    self.plugins.add_tab(self.model.buffers)
+    self.plugins.add_main(self.model.buffers)
     self.plugins.add_tab(self.model.files)
+    self.plugins.add_tab(self.model.bookmarks)
     self.plugins.add_tab(self.model.terminals)
     self.vpaned.pack1(self.model.vim.widget, resize=True, shrink=False)
     self.vpaned.pack2(self.model.terminals.book, resize=False, shrink=False)
@@ -73,12 +77,17 @@ class ApplicationWindow(delegates.WindowView):
 class PluginTabs(delegates.SlaveView):
   """Tabs containing the main plugins."""
 
-  TAB_POS = gtk.POS_LEFT
+  TAB_POS = gtk.POS_TOP
 
   def create_ui(self):
+    self.stack = gtk.VPaned()
+    self.widget.add(self.stack)
     self.book = gtk.Notebook()
     self.book.set_tab_pos(self.TAB_POS)
-    self.widget.add(self.book)
+    self.stack.pack2(self.book, resize=True, shrink=False)
+
+  def add_main(self, delegate):
+    self.stack.pack1(delegate.widget, resize=True, shrink=False)
 
   def add_tab(self, delegate):
     self.book.append_page(delegate.widget, delegate.create_tab_widget())

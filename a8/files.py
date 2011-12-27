@@ -9,7 +9,7 @@ from pygtkhelpers.ui import objectlist
 from pygtkhelpers import gthreads
 gthreads.initial_setup()
 
-from a8 import lists, resources
+from a8 import lists, resources, contexts
 
 
 HIDDEN_MASKS = [
@@ -84,5 +84,12 @@ class FileManager(lists.ListView):
     else:
       self.model.vim.open_file(item.filename)
       self.model.vim.grab_focus()
+
+  def on_items__item_right_clicked(self, items, item, event):
+    context = contexts.LocalContext(self.model, None, item.filename)
+    menu = context.create_menu()
+    menu.popup(None, None, None, event.button, event.time)
+
+
 
 

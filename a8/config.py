@@ -23,9 +23,10 @@ class Config(object):
   def load_from_file(self, path):
     """Load options from a file."""
     if not os.path.exists(path):
-      raise ConfigError('Configuration file missing.')
-    opts = yaml.load(path)
-    self.load_from(opts)
+      pass
+    else:
+      opts = yaml.load(path)
+      self.load_from(opts)
 
   def load_from(self, opts):
     """Load options from a dict-like or list of pairs."""
@@ -38,9 +39,19 @@ class Config(object):
 class InstanceDirectory(object):
   """Where user data is stored."""
 
-  def __init__(self, user_path):
+  def __init__(self, user_path=os.path.expanduser('~/.a8')):
     self.user_path = user_path
+    self.create()
+    self.config_path = self.path('config.yaml')
 
   def create(self):
-    if not os.path.exists(user_path):
-      os.mkdir(user_path)
+    if not os.path.exists(self.user_path):
+      os.mkdir(self.user_path)
+
+  def path(self, filename):
+    return os.path.join(self.user_path, filename)
+
+  def load_config(self):
+    config = Config()
+    config.load_from_file(self.config_path)
+    

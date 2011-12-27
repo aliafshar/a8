@@ -47,9 +47,7 @@ class ListView(delegates.SlaveView):
     vb = gtk.VBox()
     vb.set_spacing(3)
     icon = resources.load_icon(self.ICON)
-    label = gtk.Label(self.LABEL)
-    label.set_angle(90)
-    vb.pack_start(label)
+    icon.set_tooltip_text(self.LABEL)
     vb.pack_start(icon, expand=False)
     vb.show_all()
     return vb

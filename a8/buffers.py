@@ -34,7 +34,7 @@ class BufferManager(lists.ListView):
   """Buffer list."""
 
   LABEL = 'Buffers'
-  ICON  = 'page_white.png'
+  ICON  = 'page_white_stack.png'
 
   def create_ui(self):
     lists.ListView.create_ui(self)

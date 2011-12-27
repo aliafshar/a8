@@ -179,6 +179,10 @@ class TerminalView(delegates.SlaveView, lists.ListItem):
       'Close terminal window')
     self.browse_button = resources.load_button('folder.png',
       'Browse working directory')
+    self.shell_button = resources.load_button('application_xp_terminal.png',
+      'Open a shell in working directory')
+    self.bookmark_button = resources.load_button('star.png',
+      'Bookmark working directory')
     self.copy_button = resources.load_button('page_white_copy.png',
       'Copy selection')
     self.paste_button = resources.load_button('paste_plain.png',
@@ -191,6 +195,8 @@ class TerminalView(delegates.SlaveView, lists.ListItem):
       'Search for text', gtk.ToggleButton)
     self.tools2.pack_start(self.close_button, expand=False)
     self.tools.pack_start(self.browse_button, expand=False)
+    self.tools.pack_start(self.shell_button, expand=False)
+    self.tools.pack_start(self.bookmark_button, expand=False)
     self.tools2.pack_start(self.copy_button, expand=False)
     self.tools2.pack_start(self.paste_button, expand=False)
     self.tools2.pack_start(self.selectall_button, expand=False)
@@ -377,6 +383,12 @@ class TerminalView(delegates.SlaveView, lists.ListItem):
   def on_browse_button__clicked(self, button):
     self.model.files.browse(self.cwd)
 
+  def on_shell_button__clicked(self, button):
+    self.model.terminals.execute(cwd=self.cwd)
+
+  def on_bookmark_button__clicked(self, button):
+    self.model.bookmarks.add(self.cwd)
+
   def on_terminal__selection_changed(self, terminal):
     self.copy_button.set_sensitive(self.terminal.get_has_selection())
 
@@ -420,8 +432,8 @@ class TerminalManager(lists.ListView):
 
   def add_tab(self, delegate):
     self.book.append_page(delegate.widget, delegate.create_tab_widget())
-    self.book.set_current_page(self.book.page_num(delegate.widget))
     self.book.show_all()
+    self.book.set_current_page(self.book.page_num(delegate.widget))
     self.items.append(delegate)
 
   def remove_tab(self, delegate):

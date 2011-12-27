@@ -58,6 +58,11 @@ class LocalContext(BaseContext):
       'Terminal in Directory',
       'application_xp_terminal.png'
     ),
+    actions.Action(
+      'bookmark',
+      'Add bookmark',
+      'star.png'
+    )
   ]
 
   def create_menu(self):
@@ -82,6 +87,9 @@ class LocalContext(BaseContext):
 
   def on_shell_dir_activate(self):
     self.model.terminals.execute(cwd=self.data)
+
+  def on_bookmark_activate(self):
+    self.model.bookmarks.add(self.data)
 
 
 class UriContext(BaseContext):
