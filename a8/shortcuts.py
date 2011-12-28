@@ -19,9 +19,9 @@ for action in commands:
   actions[action.key] = action
 
 shortcuts = {
-  '<Control><Shift>t': 'shell',
-  '<Control>e': 'focus_vim',
-  '<Control>r': 'focus_terminal',
+  '<Alt>t': 'shell',
+  '<Alt>e': 'focus_vim',
+  '<Alt>r': 'focus_terminal',
   '<Alt>Up': 'prev_buffer',
   '<Alt>Down': 'next_buffer',
   '<Alt>Left': 'prev_terminal',
