@@ -151,6 +151,7 @@ class TerminalView(delegates.SlaveView, lists.ListItem):
     )
 
   def create_ui(self):
+    self.widget.set_data('delegate', self)
     self.pid = None
     self.cwd = None
     self.box = gtk.HBox()
@@ -439,6 +440,14 @@ class TerminalManager(lists.ListView):
   def remove_tab(self, delegate):
     self.book.remove_page(self.book.page_num(delegate.widget))
 
+  @property
+  def current_page(self):
+    return self.book.get_nth_page(self.book.get_current_page())
+
+  @property
+  def current_view(self):
+    return self.current_page.get_data('delegate')
+
   def execute(self, argv=None, env=None, cwd=None):
     t = TerminalView(self.model)
     t.execute(argv, env, cwd)
@@ -446,3 +455,25 @@ class TerminalManager(lists.ListView):
 
   def on_items__item_activated(self, objectlist, item):
     self.book.set_current_page(self.book.page_num(item.widget))
+
+  def grab_focus(self):
+    self.current_view.terminal.grab_focus()
+
+  def next(self):
+    current = self.book.get_current_page()
+    if current == self.book.get_n_pages() - 1:
+      update = 0
+    else:
+      update = current + 1
+    self.book.set_current_page(update)
+    self.grab_focus()
+
+  def prev(self):
+    current = self.book.get_current_page()
+    if current == 0:
+      update = self.book.get_n_pages() - 1
+    else:
+      update = current - 1
+    self.book.set_current_page(update)
+    self.grab_focus()
+

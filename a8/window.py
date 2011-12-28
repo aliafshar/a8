@@ -60,10 +60,10 @@ class ApplicationWindow(delegates.WindowView):
     self.vpaned.pack1(self.model.vim.widget, resize=True, shrink=False)
     self.vpaned.pack2(self.model.terminals.book, resize=False, shrink=False)
     self.widget.set_title('Abominade loves you.')
-    self.accel_group = shortcuts.create_accel_group()
-    #self.accel_group.connect_group()
+    self.accel_group = self.model.shortcuts.create_group()
     self.widget.add_accel_group(self.accel_group)
     self.splash.stop()
+    self.set_title('')
     self.widget.resize(640, 480)
     self.widget.show_all()
 
@@ -72,6 +72,9 @@ class ApplicationWindow(delegates.WindowView):
 
   def start(self):
     self.show_and_run()
+
+  def set_title(self, filename):
+    self.widget.set_title(u'a8♥u {0}'.format(filename))
 
 
 class PluginTabs(delegates.SlaveView):

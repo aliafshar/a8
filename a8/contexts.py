@@ -65,6 +65,33 @@ class LocalContext(BaseContext):
     )
   ]
 
+  file_actions = [
+    actions.Action(
+      'browse_file',
+      'Browse parent',
+      'folder.png',
+    ),
+    actions.Action(
+      'shell_file',
+      'Shell in parent',
+      'application_xp_terminal.png',
+    ),
+    actions.Action(
+      'bookmark',
+      'Add bookmark',
+      'star.png'
+    )
+  ]
+
+  open_file_actions = [
+    None, # Separator
+    actions.Action(
+      'close_document',
+      'Close document',
+      'cross.png',
+    )
+  ]
+
   def create_menu(self):
     """Create a menu for the context."""
     if not os.path.isabs(self.data) and self.view is not None:
@@ -72,24 +99,39 @@ class LocalContext(BaseContext):
       self.data = os.path.join(self.view.cwd, self.data)
     if os.path.isdir(self.data):
       log.debug('directory')
-      return self.create_dir_menu(self.data)
+      return self.create_dir_menu()
     elif os.path.exists(self.data):
       log.debug('file')
-      return self.create_file_menu(self.data)
+      return self.create_file_menu()
     else:
       return self.create_non_menu(self.data)
 
-  def create_dir_menu(self, data):
+  def create_dir_menu(self):
     return self.create_action_menu(self.dir_actions)
+
+  def create_file_menu(self):
+    actions = list(self.file_actions)
+    if self.data in self.model.buffers.filenames:
+      actions.extend(self.open_file_actions)
+    return self.create_action_menu(actions)
 
   def on_browse_dir_activate(self):
     self.model.files.browse(self.data)
 
+  def on_browse_file_activate(self):
+    self.model.files.browse(os.path.dirname(self.data))
+
   def on_shell_dir_activate(self):
     self.model.terminals.execute(cwd=self.data)
 
+  def on_shell_file_activate(self):
+    self.model.terminals.execute(cwd=os.path.dirname(self.data))
+
   def on_bookmark_activate(self):
     self.model.bookmarks.add(self.data)
+
+  def on_close_document_activate(self):
+    self.model.vim.close(self.data)
 
 
 class UriContext(BaseContext):

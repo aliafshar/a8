@@ -219,6 +219,14 @@ class VimDBUSService(Object):
   def redo(self):
     vim.command('redo')
 
+  @method(VIM_NS)
+  def next(self):
+    vim.command('bn')
+
+  @method(VIM_NS)
+  def prev(self):
+    vim.command('bp')
+
   @method(VIM_NS, in_signature='s')
   def set_colorscheme(self, name):
     vim.command('colorscheme %s' % name)
@@ -251,8 +259,8 @@ class VimDBUSService(Object):
   def BufNew(self, bufid):
     pass
 
-  @signal(VIM_NS, signature='s')
-  def BufDelete(self, bufid):
+  @signal(VIM_NS, signature='ss')
+  def BufDelete(self, bufid, filename):
     pass
 
   @signal(VIM_NS, signature='s')
@@ -366,7 +374,7 @@ silent au VimCommsDBus BufWritePre * silent call VimSignal('BufWritePre', expand
 silent au VimCommsDBus BufWritePost * silent call VimSignal('BufWritePost', expand('<abuf>'))
 
 silent au VimCommsDBus BufAdd * silent call VimSignal('BufAdd', expand('<abuf>'))
-silent au VimCommsDBus BufDelete * silent call VimSignal('BufDelete', expand('<abuf>'))
+silent au VimCommsDBus BufDelete * silent call VimSignal('BufDelete', expand('<abuf>'), expand('<amatch>'))
 silent au VimCommsDBus BufUnload * silent call VimSignal('BufUnload', expand('<abuf>'))
 silent au VimCommsDBus BufUnload * silent call VimSignal('BufHidden', expand('<abuf>'))
 silent au VimCommsDBus BufWipeout * silent call VimSignal('BufWipeout', expand('<abuf>'))

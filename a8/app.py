@@ -6,7 +6,8 @@
 """Abominade Monolith."""
 
 
-from a8 import terminals, files, buffers, vimembed, window, config, bookmarks
+from a8 import (terminals, files, buffers, vimembed, window, config, bookmarks,
+                shortcuts)
 
 
 class Abominade(object):
@@ -14,6 +15,7 @@ class Abominade(object):
 
   def __init__(self):
     self.home = config.InstanceDirectory()
+    self.shortcuts = shortcuts.ShortcutManager(self)
     self.files = files.FileManager(self)
     self.buffers = buffers.BufferManager(self)
     self.terminals = terminals.TerminalManager(self)

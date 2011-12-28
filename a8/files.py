@@ -27,8 +27,8 @@ class File(lists.ListItem):
   MARKUP_TEMPLATE = '{0}'
 
   def __init__(self, filename):
-    self.filename = filename
-    self.basename = os.path.basename(filename)
+    self.filename = unicode(filename)
+    self.basename = os.path.basename(self.filename)
     self.lowname = self.basename.lower()
     self.isdir = os.path.isdir(self.filename)
     self.isdir_key = (self.isdir and 'a' or 'b', self.lowname)

@@ -35,9 +35,11 @@ class ListView(delegates.SlaveView):
 
   def create_ui(self):
     """Create the user interface."""
+    self.stack = gtk.VBox()
+    self.widget.add(self.stack)
     self.scroll = gtk.ScrolledWindow()
     self.scroll.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-    self.widget.add(self.scroll)
+    self.stack.pack_end(self.scroll)
     self.items = objectlist.ObjectList(self.COLUMNS)
     self.items.set_headers_visible(False)
     self.scroll.add(self.items)

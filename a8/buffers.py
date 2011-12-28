@@ -11,7 +11,7 @@ import os
 import gtk, gtk.gdk
 from pygtkhelpers.ui import objectlist
 
-from a8 import resources, lists
+from a8 import resources, lists, contexts
 
 
 class Buffer(lists.ListItem):
@@ -38,6 +38,7 @@ class BufferManager(lists.ListView):
 
   def create_ui(self):
     lists.ListView.create_ui(self)
+    self.stack.pack_start(self.model.shortcuts.create_tools(), expand=False)
     self.filenames = {}
 
   def append(self, filename):
@@ -47,8 +48,16 @@ class BufferManager(lists.ListView):
     if not self.items.selected_item or self.items.selected_item.filename != filename:
       self.items.selected_item = self.filenames[filename]
 
+  def remove(self, filename):
+    buf = self.filenames.pop(filename)
+    self.items.remove(buf)
+
   def on_items__item_activated(self, items, item):
     self.model.vim.open_file(item.filename)
     self.model.vim.grab_focus()
 
+  def on_items__item_right_clicked(self, items, item, event):
+    context = contexts.LocalContext(self.model, None, item.filename)
+    menu = context.create_menu()
+    menu.popup(None, None, None, event.button, event.time)
 

@@ -88,8 +88,17 @@ class VimManager(delegates.SlaveView):
   def open_file(self, filename):
     self.vim.open_file(filename)
 
+  def close(self, filename):
+    self.vim.close_buffer(filename)
+
   def goto_line(self, line):
     self.vim.goto_line(line)
+
+  def next(self):
+    self.vim.next()
+
+  def prev(self):
+    self.vim.prev()
 
   def connect_vim_signals(self):
     for k in dir(self):
@@ -104,21 +113,24 @@ class VimManager(delegates.SlaveView):
     log.debug('Signal: Buffer {0} {1}'.format(bufid, filename))
     path = unicode(filename)
     if not path or os.path.isdir(path):
-      path = None
+      path = ''
     else:
       if not os.path.abspath(path):
         cwd = self.vim.get_cwd()
         path = os.path.join(cwd, path)
       path = os.path.realpath(path)
       bufid = int(bufid)
-      self.model.buffers.append(filename)
-      self.model.ui.set_title(filename)
+      self.model.buffers.append(path)
+    self.model.ui.set_title(path)
 
   def onvim_BufNew(self, bufid):
-    print 'new', bufid
+    log.debug('New {0}', bufid)
 
-  def onvim_BufDelete(self, bufid):
-    print bufid, 'deleted'
+  def onvim_BufDelete(self, bufid, filename):
+    path = unicode(filename)
+    if not path:
+      return
+    self.model.buffers.remove(path)
 
   def onvim_VimLeave(self):
     log.debug('Signal: Leave')
