@@ -5,3 +5,4 @@ dist
 ^.+\.pyc$
 ^.+\.swp$
 a8.egg-info
+MANIFEST.in
