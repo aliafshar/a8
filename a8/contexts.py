@@ -71,6 +71,7 @@ class LocalContext(BaseContext):
       'Open file',
       'page_white.png'
     ),
+    None,
     actions.Action(
       'browse_file',
       'Browse parent',
