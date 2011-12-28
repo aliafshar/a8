@@ -19,6 +19,7 @@ log = logbook.Logger('Vim')
 
 
 class VimManager(delegates.SlaveView):
+  """Embed and communicate with Vim."""
 
   null_callback = {
     'reply_handler': lambda *args: None,

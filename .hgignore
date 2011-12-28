@@ -1,11 +1,7 @@
-(^|/)\.bzr($|/)
 (^|/)\.hg($|/)
 (^|/)\.hgtags($|/)
-docs/build
-build/
-dist/
+build
+dist
 ^.+\.pyc$
 ^.+\.swp$
-lib/
-ext/html5-boilerplate/
-.pida-metadata
+a8.egg-info
