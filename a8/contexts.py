@@ -67,6 +67,11 @@ class LocalContext(BaseContext):
 
   file_actions = [
     actions.Action(
+      'open_file',
+      'Open file',
+      'page_white.png'
+    ),
+    actions.Action(
       'browse_file',
       'Browse parent',
       'folder.png',
@@ -132,6 +137,9 @@ class LocalContext(BaseContext):
 
   def on_close_document_activate(self):
     self.model.vim.close(self.data)
+
+  def on_open_file_activate(self):
+    self.model.vim.open_file(self.data)
 
 
 class UriContext(BaseContext):
