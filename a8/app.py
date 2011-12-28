@@ -5,6 +5,7 @@
 
 """Abominade Monolith."""
 
+import argparse
 
 from a8 import (terminals, files, buffers, vimembed, window, config, bookmarks,
                 shortcuts)
@@ -15,6 +16,7 @@ class Abominade(object):
 
   def __init__(self):
     self.home = config.InstanceDirectory()
+    self.parse_args()
     self.shortcuts = shortcuts.ShortcutManager(self)
     self.files = files.FileManager(self)
     self.buffers = buffers.BufferManager(self)
@@ -22,6 +24,11 @@ class Abominade(object):
     self.bookmarks = bookmarks.BookmarkManager(self)
     self.vim = vimembed.VimManager(self)
     self.ui = window.ApplicationWindow(self)
+
+  def parse_args(self):
+    parser = argparse.ArgumentParser()
+    parser.add_argument('files', nargs='*', help='Files to open.')
+    self.args = parser.parse_args()
 
   def start(self):
     """Start a8"""

@@ -76,6 +76,18 @@ class ApplicationWindow(delegates.WindowView):
   def set_title(self, filename):
     self.widget.set_title(u'a8♥u {0}'.format(filename))
 
+  def focus_files(self):
+    self.plugins.focus_delegate(self.model.files)
+
+  def focus_bookmarks(self):
+    self.plugins.focus_delegate(self.model.bookmarks)
+
+  def focus_terminals(self):
+    self.plugins.focus_delegate(self.model.terminals)
+
+  def focus_buffers(self):
+    self.models.buffers.items.grab_focus()
+
 
 class PluginTabs(delegates.SlaveView):
   """Tabs containing the main plugins."""
@@ -95,7 +107,9 @@ class PluginTabs(delegates.SlaveView):
   def add_tab(self, delegate):
     self.book.append_page(delegate.widget, delegate.create_tab_widget())
 
-
+  def focus_delegate(self, delegate):
+    self.book.set_current_page(self.book.page_num(delegate.widget))
+    delegate.items.grab_focus()
 
 
 if __name__ == '__main__':

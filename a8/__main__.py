@@ -3,16 +3,14 @@
 # vim: ft=python sw=2 ts=2 sts=2 tw=80
 
 
-import sys
-
 from a8 import app
 
 
-def main(argv):
+def main():
   """Run Abominade."""
   a8 = app.Abominade()
   a8.start()
 
 
 if __name__ == '__main__':
-  sys.exit(main(sys.argv))
+  main()

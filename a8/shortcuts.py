@@ -8,25 +8,34 @@ import logbook
 
 from a8 import actions, resources
 
+
 log = logbook.Logger('shortcuts')
+
 
 commands = [
   actions.Action('shell', 'Shell', 'application_xp_terminal.png'),
 ]
 
+
 actions = {}
 for action in commands:
   actions[action.key] = action
+
 
 shortcuts = {
   '<Alt>t': 'shell',
   '<Alt>e': 'focus_vim',
   '<Alt>r': 'focus_terminal',
+  '<Alt>b': 'focus_buffers',
+  '<Alt>m': 'focus_files',
+  '<Alt>i': 'focus_terminals',
+  '<Alt>k': 'focus_bookmarks',
   '<Alt>Up': 'prev_buffer',
   '<Alt>Down': 'next_buffer',
   '<Alt>Left': 'prev_terminal',
   '<Alt>Right': 'next_terminal',
 }
+
 
 class ShortcutManager(object):
 
@@ -94,4 +103,16 @@ class ShortcutManager(object):
 
   def on_next_terminal_activate(self):
     self.model.terminals.next()
+
+  def on_focus_buffers_activate(self):
+    self.model.ui.focus_buffers()
+
+  def on_focus_bookmarks_activate(self):
+    self.model.ui.focus_bookmarks()
+
+  def on_focus_files_activate(self):
+    self.model.ui.focus_files()
+
+  def on_focus_terminals_activate(self):
+    self.model.ui.focus_terminals()
 

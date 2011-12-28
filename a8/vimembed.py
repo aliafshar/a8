@@ -107,6 +107,8 @@ class VimManager(delegates.SlaveView):
 
   def onvim_VimEnter(self):
     log.debug('Signal: Enter')
+    for filename in self.model.args.files:
+      self.open_file(filename)
     self.grab_focus()
 
   def onvim_BufEnter(self, bufid, filename):
