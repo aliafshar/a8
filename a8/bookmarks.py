@@ -6,7 +6,7 @@ import os
 
 import yaml
 
-from a8 import lists
+from a8 import lists, contexts
 
 
 class BookMark(lists.ListItem):
@@ -31,7 +31,6 @@ class BookMark(lists.ListItem):
       return 'uri'
     else:
       return 'file'
-
 
 
 class BookmarkManager(lists.ListView):
@@ -80,8 +79,11 @@ class BookmarkManager(lists.ListView):
   def activate_file(self, bookmark):
     self.model.vim.open(bookmark.target)
 
-  def activate_uri(self, bookmark):
-    pass
+  def on_items__item_right_clicked(self, items, item, event):
+    context = contexts.LocalContext(self.model, None, item.target)
+    menu = context.create_menu()
+    menu.popup(None, None, None, event.button, event.time)
+
 
   def on_items__item_activated(self, objectlist, item):
     self.activate(item)
