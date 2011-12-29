@@ -65,6 +65,7 @@ class FileManager(lists.ListView):
     self.items.clear()
     task = gthreads.GeneratorTask(self.browse_work, self.browse_item)
     task.start(path)
+    self.model.ui.focus_files()
 
   def browse_work(self, path):
     parent = File(os.path.dirname(path))
