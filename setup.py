@@ -20,6 +20,7 @@ setup(
     'logbook',
     'pygtkhelpers>=0.4.3',
     'argparse',
+    'pyyaml',
   ],
   packages = [
     'a8',
