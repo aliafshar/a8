@@ -33,8 +33,8 @@ VIM_NS = bus.get_ns(VIM_NAME)
 VIM_PATH = bus.get_path(VIM_NAME)
 VIM_UID = vim.eval('A8_UID')
 VIM_BUSNAME = bus.get_busname(VIM_NAME, VIM_UID)
-
-
+VIM_RUNTIME = vim.eval('$VIMRUNTIME')
+VIM_DOCS = os.path.join(VIM_RUNTIME, 'doc')
 
 
 class VimDBUSService(Object):
@@ -344,7 +344,7 @@ def offset_to_position(offset):
 def clean_signal_args(args):
   args = list(args)
   for i, arg in enumerate(args):
-    if arg is None:
+    if arg is None or arg.startswith(VIM_DOCS):
       args[i] = ''
   return args
 

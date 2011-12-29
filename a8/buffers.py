@@ -47,10 +47,12 @@ class BufferManager(lists.ListView):
       self.items.append(buf)
     if not self.items.selected_item or self.items.selected_item.filename != filename:
       self.items.selected_item = self.filenames[filename]
+    print self.filenames
 
   def remove(self, filename):
-    buf = self.filenames.pop(filename)
-    self.items.remove(buf)
+    if filename in self.filenames:
+      buf = self.filenames.pop(filename)
+      self.items.remove(buf)
 
   def on_items__item_activated(self, items, item):
     self.model.vim.open_file(item.filename)
