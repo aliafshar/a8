@@ -69,7 +69,6 @@ class BookmarkManager(lists.ListView):
     dispatch = {
       'dir': self.activate_dir,
       'file': self.activate_file,
-      'uri': self.activate_uri,
     }
     dispatch[bookmark.type](bookmark)
 
