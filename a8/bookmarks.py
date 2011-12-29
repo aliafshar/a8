@@ -3,10 +3,10 @@
 # vim: ft=python sw=2 ts=2 sts=2 tw=80
 
 import os
-
+import gtk
 import yaml
 
-from a8 import lists, contexts
+from a8 import lists, contexts, actions
 
 
 class BookMark(lists.ListItem):
@@ -37,6 +37,9 @@ class BookmarkManager(lists.ListView):
 
   LABEL = 'Bookmarks'
   ICON = 'star.png'
+
+  remove_action = actions.Action('remove_bookmark', 'Remove Bookmark',
+                                 'cross.png')
 
   def add(self, target):
     self.items.append(BookMark(target))
@@ -76,12 +79,27 @@ class BookmarkManager(lists.ListView):
     self.model.files.browse(bookmark.target)
 
   def activate_file(self, bookmark):
-    self.model.vim.open(bookmark.target)
+    self.model.vim.open_file(bookmark.target)
 
   def on_items__item_right_clicked(self, items, item, event):
     context = contexts.LocalContext(self.model, None, item.target)
     menu = context.create_menu()
+    self.extend_menu(menu)
+    menu.show_all()
     menu.popup(None, None, None, event.button, event.time)
+
+  def extend_menu(self, menu):
+    menu.append(gtk.SeparatorMenuItem())
+    remove_item = self.remove_action.create_menuitem()
+    menu.append(remove_item)
+    for menuitem in menu.get_children():
+      if menuitem.get_data('action_key') == 'bookmark':
+        menuitem.set_sensitive(False)
+    remove_item.connect('activate', self.on_remove_item_activate)
+
+  def on_remove_item_activate(self, menuitem):
+    self.items.remove(self.items.selected_item)
+    self.save()
 
   def on_items__item_activated(self, objectlist, item):
     self.activate(item)
