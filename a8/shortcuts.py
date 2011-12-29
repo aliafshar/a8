@@ -6,7 +6,7 @@
 import gtk
 import logbook
 
-from a8 import actions, resources, config
+from a8 import actions, resources, config, terminals
 
 
 log = logbook.Logger('shortcuts')
@@ -37,6 +37,14 @@ shortcuts = {
 }
 
 
+class CustomShortcut(object):
+
+  def __init__(self):
+    self.cmd = None
+    self.cwd = None
+    self.env = None
+
+
 class ShortcutManager(object):
 
   def __init__(self, model):
@@ -50,7 +58,27 @@ class ShortcutManager(object):
       keyval, modifier = gtk.accelerator_parse(shortcut)
       accel_group.connect_group(keyval, modifier, gtk.ACCEL_VISIBLE,
                                 self.accel_callback(action))
+    for shortcut, custom in self.get_customs():
+      keyval, modifier = gtk.accelerator_parse(shortcut)
+      accel_group.connect_group(keyval, modifier, gtk.ACCEL_VISIBLE,
+                                self.custom_callback(custom))
     return accel_group
+
+  def get_customs(self):
+    custom_data = self.config.get('custom', None)
+    if not custom_data or not isinstance(custom_data, list):
+      return
+    for custom_datum in custom_data:
+      if not isinstance(custom_datum, dict):
+        continue
+      shortcut = custom_datum.get('key')
+      if not shortcut:
+        continue
+      custom = CustomShortcut()
+      custom.cmd = custom_datum.get('cmd')
+      custom.cwd = custom_datum.get('cwd')
+      custom.env = custom_datum.get('env')
+      yield shortcut, custom
 
   def create_tools(self):
     bar = gtk.HBox()
@@ -75,6 +103,15 @@ class ShortcutManager(object):
       except Exception, e:
         raise
         log.error('Unhandled: {0}', e)
+      return True
+    return on_accel
+
+  def custom_callback(self, custom):
+    def on_accel(group, acceleratable, keyval, modifier,
+                 self=self, custom=custom):
+      self.model.terminals.execute(
+        [terminals.get_default_shell(), '-c', custom.cmd],
+        custom.cwd, custom.env)
       return True
     return on_accel
 
