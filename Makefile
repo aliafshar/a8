@@ -4,6 +4,7 @@
 test-build: clean
 	virtualenv test-ve
 	test-ve/bin/python setup.py install
+	cd test-ve && ./bin/a8
 
 
 sdist: clean MANIFEST.in
@@ -15,7 +16,7 @@ upload: clean MANIFEST.in
 
 
 clean:
-	rm -rf a8.egg-info build dist MANIFEST.in
+	rm -rf a8.egg-info build dist MANIFEST.in test-ve
 
 define MANIFEST_BODY
 include a8/*.py
