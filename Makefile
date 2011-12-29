@@ -10,8 +10,8 @@ sdist: clean MANIFEST.in
 	python setup.py sdist --formats=gztar,zip
 
 
-sdist: clean MANIFEST.in
-	python setup.py sdist --formats=gztar,zip
+upload: clean MANIFEST.in
+	python setup.py sdist --formats=gztar,zip upload
 
 
 clean:
