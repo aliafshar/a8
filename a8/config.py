@@ -18,20 +18,19 @@ class ConfigError(ValueError):
 class Config(object):
   """Configuration object"""
   def __init__(self):
-    self._opts = {}
+    self.opts = {}
 
   def load_from_file(self, path):
     """Load options from a file."""
-    if not os.path.exists(path):
-      pass
-    else:
-      opts = yaml.load(path)
-      self.load_from(opts)
+    if os.path.exists(path):
+      with open(path) as f:
+        opts = yaml.load(f)
+        self.load_from(opts)
 
   def load_from(self, opts):
     """Load options from a dict-like or list of pairs."""
     try:
-      self._opts.update(opts)
+      self.opts.update(opts)
     except ValueError:
       raise ConfigError('Options are not a k/v map.')
 
@@ -54,4 +53,4 @@ class InstanceDirectory(object):
   def load_config(self):
     config = Config()
     config.load_from_file(self.config_path)
-    
+

@@ -6,7 +6,7 @@
 import gtk
 import logbook
 
-from a8 import actions, resources
+from a8 import actions, resources, config
 
 
 log = logbook.Logger('shortcuts')
@@ -41,10 +41,13 @@ class ShortcutManager(object):
 
   def __init__(self, model):
     self.model = model
+    self.config = config.Config()
+    self.config.load_from_file(self.model.home.path('shortcuts.yaml'))
 
   def create_group(self):
     accel_group = gtk.AccelGroup()
     for shortcut, action in shortcuts.items():
+      shortcut = self.config.opts.get(action, shortcut)
       keyval, modifier = gtk.accelerator_parse(shortcut)
       accel_group.connect_group(keyval, modifier, gtk.ACCEL_VISIBLE,
                                 self.accel_callback(action))
