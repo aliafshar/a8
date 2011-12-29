@@ -41,8 +41,7 @@ class ShortcutManager(object):
 
   def __init__(self, model):
     self.model = model
-    self.config = config.Config()
-    self.config.load_from_file(self.model.home.path('shortcuts.yaml'))
+    self.config = self.model.home.load_shortcuts()
 
   def create_group(self):
     accel_group = gtk.AccelGroup()

@@ -42,6 +42,7 @@ class InstanceDirectory(object):
     self.user_path = user_path
     self.create()
     self.config_path = self.path('config.yaml')
+    self.shortcuts_path = self.path('shortcuts.yaml')
 
   def create(self):
     if not os.path.exists(self.user_path):
@@ -53,4 +54,9 @@ class InstanceDirectory(object):
   def load_config(self):
     config = Config()
     config.load_from_file(self.config_path)
+    return config
 
+  def load_shortcuts(self):
+    config = Config()
+    config.load_from_file(self.shortcuts_path)
+    return config
