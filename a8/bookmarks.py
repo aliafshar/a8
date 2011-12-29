@@ -60,7 +60,9 @@ class BookmarkManager(lists.ListView):
       self.items.append(BookMark(item))
 
   def save(self):
-    data = yaml.dump([item.target for item in self.items])
+    data = yaml.dump([item.target.encode('utf-8')
+                     for item in self.items],
+                     default_flow_style=False)
     with open(self.filename, 'w') as f:
       f.write(data)
 
