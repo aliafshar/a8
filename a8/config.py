@@ -20,6 +20,9 @@ class Config(object):
   def __init__(self):
     self.opts = {}
 
+  def get(self, k, default=None):
+    return self.opts.get(k, default)
+
   def load_from_file(self, path):
     """Load options from a file."""
     if os.path.exists(path):
@@ -29,6 +32,8 @@ class Config(object):
 
   def load_from(self, opts):
     """Load options from a dict-like or list of pairs."""
+    if not opts:
+      return
     try:
       self.opts.update(opts)
     except ValueError:

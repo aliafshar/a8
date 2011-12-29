@@ -81,10 +81,10 @@ class TerminalConfiguration(object):
     """Configure the terminal to the stored options."""
     self.set_color_option(term, 'color_foreground')
     self.set_color_option(term, 'color_background')
-    self.set_enum_option(term, 'backspace_binding')
-    self.set_enum_option(term, 'cursor_shape')
-    self.set_enum_option(term, 'cursor_blink_mode')
-    self.set_font_option(term, 'font_desc')
+    self.set_enum_option(term, self.erase_enum, 'backspace_binding')
+    self.set_enum_option(term, self.cursor_shape_enum, 'cursor_shape')
+    self.set_enum_option(term, self.cursor_blink_enum, 'cursor_blink_mode')
+    self.set_font_option(term, 'font')
     self.set_simple_option(term, 'allow_bold')
     self.set_simple_option(term, 'audible_bell')
     self.set_simple_option(term, 'emulation')
@@ -97,7 +97,7 @@ class TerminalConfiguration(object):
 
   def set_enum_option(self, term, enum, opt):
     """Set an enum-based option."""
-    val = self.opts.get(opt, val, Unset)
+    val = self.opts.get(opt, Unset)
     if val is Unset:
       return
     enumval = enum.get(val, Unset)
@@ -105,15 +105,15 @@ class TerminalConfiguration(object):
 
   def set_font_option(self, term, opt):
     """Set a font option."""
-    val = self.opts.get(opt, val, Unset)
+    val = self.opts.get(opt, Unset)
     if val is Unset:
       return
-    fontdesc = Pango.FontDescription(val)
+    fontdesc = pango.FontDescription(val)
     self.set_option(term, opt, fontdesc)
 
   def set_color_option(self, term, opt):
     """Set a color option."""
-    val = self.opts.get(opt, val, Unset)
+    val = self.opts.get(opt, Unset)
     if val is Unset:
       return
     color = gtk.gdk.color_parse(val)
@@ -121,20 +121,20 @@ class TerminalConfiguration(object):
 
   def set_simple_option(self, term, opt):
     """Set a simple option."""
-    val = self.opts.get(opt, val, Unset)
+    val = self.opts.get(opt, Unset)
     if val is Unset:
       return
     self.set_option(term, opt, val)
 
   def set_option(self, term, opt, val):
     """Set an option."""
-    if value is Unset:
+    if val is Unset:
       return
     setter = getattr(term, 'set_%s' % opt, None)
     if setter is not None:
       setter(val)
     else:
-      raise KeyError('bad configuration key "%s".' % option)
+      raise KeyError('bad configuration key "%s".' % opt)
 
 
 class TerminalView(delegates.SlaveView, lists.ListItem):
@@ -163,6 +163,9 @@ class TerminalView(delegates.SlaveView, lists.ListItem):
     self.stack = gtk.VBox()
     self.box.pack_start(self.stack)
     self.terminal = vte.Terminal()
+    self.config = TerminalConfiguration()
+    self.config.update(self.model.config.get('terminal', {}))
+    self.config.configure(self.terminal)
     self.add_contexts()
     # Fix the size because by default it is huge.
     self.terminal.set_size_request(50, 50)

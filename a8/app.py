@@ -16,6 +16,7 @@ class Abominade(object):
 
   def __init__(self):
     self.home = config.InstanceDirectory()
+    self.config = self.home.load_config()
     self.parse_args()
     self.shortcuts = shortcuts.ShortcutManager(self)
     self.files = files.FileManager(self)
