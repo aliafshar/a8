@@ -84,8 +84,6 @@ class BookmarkManager(lists.ListView):
     menu = context.create_menu()
     menu.popup(None, None, None, event.button, event.time)
 
-
   def on_items__item_activated(self, objectlist, item):
     self.activate(item)
-
 
