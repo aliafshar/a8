@@ -5,7 +5,7 @@
 
 import gtk
 
-from pygtkhelpers import delegates
+from pygtkhelpers import delegates, utils
 
 from a8 import shortcuts, resources
 
@@ -32,6 +32,7 @@ class SplashScreen(object):
   def start(self):
     """Launch the splash screen."""
     self.window.show_all()
+    utils.refresh_gui()
 
   def stop(self):
     """Stop the splash screen."""
