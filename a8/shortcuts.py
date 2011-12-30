@@ -3,6 +3,7 @@
 # vim: ft=python sw=2 ts=2 sts=2 tw=80
 
 
+import os
 import gtk
 import logbook
 
@@ -14,6 +15,7 @@ log = logbook.Logger('shortcuts')
 
 commands = [
   actions.Action('shell', 'Shell', 'application_xp_terminal.png'),
+  actions.Action('browse_home', 'Browse home directory', 'house_go.png'),
   None,
   actions.Action('close_all_buffers', 'Close all buffers', 'cross.png'),
 ]
@@ -33,6 +35,7 @@ shortcuts = {
   '<Alt>Right': 'next_terminal',
   '<Alt>g': 'refresh_files',
   '<Alt>c': 'close_all_buffers',
+  '<Alt>h': 'browse_home',
 }
 
 
@@ -161,3 +164,6 @@ class ShortcutManager(object):
 
   def on_close_all_buffers_activate(self):
     self.model.vim.close_all()
+
+  def on_browse_home_activate(self):
+    self.model.files.browse(os.path.expanduser('~'))
