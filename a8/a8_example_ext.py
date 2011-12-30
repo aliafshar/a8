@@ -33,7 +33,7 @@ class SaveLog(lists.ListView):
 
 def annotate_file(item):
   """Annotate files with the first letter of their name."""
-  item.annotation = item.basename[0]
+  item.annotation = item.basename[0] + ' '
 
 
 def setup(app):
