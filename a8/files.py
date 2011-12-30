@@ -24,7 +24,7 @@ class File(lists.ListItem):
   folder_pixbuf = resources.load_icon('folder.png').get_pixbuf()
   file_pixbuf = resources.load_icon('page_white.png').get_pixbuf()
 
-  MARKUP_TEMPLATE = '{0}'
+  MARKUP_TEMPLATE = '<b><tt>{0}</tt></b>{1}'
 
   def __init__(self, filename):
     self.filename = unicode(filename)
@@ -37,7 +37,7 @@ class File(lists.ListItem):
 
   @property
   def markup_args(self):
-    return (self.basename,)
+    return (self.annotation, self.basename)
 
   @property
   def icon(self):
@@ -55,8 +55,7 @@ class FileManager(lists.ListView):
   ICON  = 'folder.png'
   COLUMNS = [
     objectlist.Column('icon', type=gtk.gdk.Pixbuf),
-    objectlist.Column('annotation', use_markup=True, expand=False),
-    objectlist.Column('markup'),
+    objectlist.Column('markup', use_markup=True),
   ]
 
   TOOL_ACTIONS = [
