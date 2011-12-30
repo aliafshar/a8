@@ -61,6 +61,14 @@ class BookmarkManager(lists.ListView):
     for item in yaml.load(data):
       self.items.append(BookMark(item))
 
+  def shortest_path(self, path):
+    match = None
+    for item in self.items:
+      if item.target in path and (not match or
+        len(item.target) > len(match.target)):
+        match = item
+    return match
+
   def save(self):
     data = yaml.dump([item.target.encode('utf-8')
                      for item in self.items],

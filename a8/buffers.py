@@ -17,17 +17,24 @@ from a8 import resources, lists, contexts
 class Buffer(lists.ListItem):
   """Loaded buffer."""
 
-  MARKUP_TEMPLATE = '<b>{0}</b>\n<span size="xx-small">{1}</span>'
+  MARKUP_TEMPLATE = '<b>{0}</b>\n<span size="x-small">{1}</span>'
 
-  def __init__(self, filename):
+  def __init__(self, model, filename):
+    self.model = model
     self.filename = filename
     self.dirname = os.path.dirname(filename)
     self.basename = os.path.basename(filename)
+    bookmark = self.model.bookmarks.shortest_path(filename)
+    if bookmark:
+      supname = self.dirname.replace(bookmark.target, '')
+      self.dispname = '{0}:{1}'.format(bookmark.basename, supname)
+    else:
+      self.dispname = self.dirname
 
   @property
   def markup_args(self):
     """Display in the buffer list."""
-    return (self.basename, self.dirname)
+    return (self.basename, self.dispname)
 
 
 class BufferManager(lists.ListView):
@@ -44,7 +51,7 @@ class BufferManager(lists.ListView):
 
   def append(self, filename):
     if filename not in self.filenames:
-      self.filenames[filename] = buf = Buffer(filename)
+      self.filenames[filename] = buf = Buffer(self.model, filename)
       self.items.append(buf)
     if not self.items.selected_item or self.items.selected_item.filename != filename:
       self.items.selected_item = self.filenames[filename]
