@@ -9,7 +9,7 @@ import collections
 import argparse
 
 from a8 import (terminals, files, buffers, vimembed, window, config, bookmarks,
-                shortcuts, extensions)
+                shortcuts, extensions, sessions)
 
 class Abominade(object):
   """Abominade Monolith"""
@@ -26,6 +26,7 @@ class Abominade(object):
     self.bookmarks = bookmarks.BookmarkManager(self)
     self.vim = vimembed.VimManager(self)
     self.ui = window.ApplicationWindow(self)
+    self.sessions = sessions.SessionManager(self)
     extensions.load_extensions(self)
 
   def parse_args(self):
@@ -36,13 +37,13 @@ class Abominade(object):
   def start(self):
     """Start a8"""
     self.vim.start()
-    self.terminals.execute()
     self.files.browse()
     self.ui.start()
 
   def stop(self):
     """Stop a8"""
     self.vim.stop()
+    self.sessions.save()
 
   def emit(self, signal, **kw):
     for callback in self.signals[signal]:
