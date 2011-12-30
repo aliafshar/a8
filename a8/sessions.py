@@ -44,7 +44,7 @@ class SessionManager(object):
     if not self.model.config.get('session', True):
       return
     for filename in self.session.get('buffers', []):
-      self.model.buffers.append(filename)
+      self.model.vim.open_file(filename)
     terminals = self.session.get('terminals', [])
     if terminals:
       for cwd in terminals:

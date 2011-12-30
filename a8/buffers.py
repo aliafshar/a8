@@ -46,7 +46,7 @@ class BufferManager(lists.ListView):
   def create_ui(self):
     lists.ListView.create_ui(self)
     #TODO(afshar) when there are a few more things here
-    #self.stack.pack_start(self.model.shortcuts.create_tools(), expand=False)
+    self.stack.pack_start(self.model.shortcuts.create_tools(), expand=False)
     self.filenames = {}
 
   def append(self, filename):

@@ -14,12 +14,9 @@ log = logbook.Logger('shortcuts')
 
 commands = [
   actions.Action('shell', 'Shell', 'application_xp_terminal.png'),
+  None,
+  actions.Action('close_all_buffers', 'Close all buffers', 'cross.png'),
 ]
-
-
-actions = {}
-for action in commands:
-  actions[action.key] = action
 
 
 shortcuts = {
@@ -35,6 +32,7 @@ shortcuts = {
   '<Alt>Left': 'prev_terminal',
   '<Alt>Right': 'next_terminal',
   '<Alt>g': 'refresh_files',
+  '<Alt>c': 'close_all_buffers',
 }
 
 
@@ -83,11 +81,13 @@ class ShortcutManager(object):
 
   def create_tools(self):
     bar = gtk.HBox()
-    bar.set_spacing(3)
     for action in commands:
-      button = resources.load_button(action.icon, action.label)
-      bar.pack_start(button, expand=False)
-      button.connect('clicked', self.on_button, action.key)
+      if action is None:
+        bar.pack_start(gtk.Alignment())
+      else:
+        button = resources.load_button(action.icon, action.label)
+        bar.pack_start(button, expand=False)
+        button.connect('clicked', self.on_button, action.key)
     bar.show_all()
     return bar
 
@@ -159,3 +159,5 @@ class ShortcutManager(object):
   def on_refresh_files_activate(self):
     self.model.files.on_refresh_activate()
 
+  def on_close_all_buffers_activate(self):
+    self.model.vim.close_all()

@@ -112,6 +112,11 @@ class VimDBUSService(Object):
   def close_buffer_id(self, bufid):
     if int(vim.eval("bufexists(%s)" % bufid)):
       vim.command('confirm bd%s' % bufid)
+  
+  @method(VIM_NS)
+  def close_all_buffers(self):
+    for path in self.get_buffer_list():
+      self.close_buffer(path)
 
   @method(VIM_NS)
   def close_current_buffer(self):

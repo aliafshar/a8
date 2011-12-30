@@ -442,6 +442,7 @@ class TerminalManager(lists.ListView):
 
   def remove_tab(self, delegate):
     self.book.remove_page(self.book.page_num(delegate.widget))
+    self.items.remove(delegate)
 
   @property
   def current_page(self):

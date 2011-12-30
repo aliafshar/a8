@@ -92,6 +92,9 @@ class VimManager(delegates.SlaveView):
   def close(self, filename):
     self.vim.close_buffer(filename)
 
+  def close_all(self):
+    self.vim.close_all_buffers()
+
   def goto_line(self, line):
     self.vim.goto_line(line)
 
