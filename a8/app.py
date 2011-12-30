@@ -5,16 +5,17 @@
 
 """Abominade Monolith."""
 
+import collections
 import argparse
 
 from a8 import (terminals, files, buffers, vimembed, window, config, bookmarks,
-                shortcuts)
-
+                shortcuts, extensions)
 
 class Abominade(object):
   """Abominade Monolith"""
 
   def __init__(self):
+    self.signals = collections.defaultdict(list)
     self.home = config.InstanceDirectory()
     self.config = self.home.load_config()
     self.parse_args()
@@ -25,6 +26,7 @@ class Abominade(object):
     self.bookmarks = bookmarks.BookmarkManager(self)
     self.vim = vimembed.VimManager(self)
     self.ui = window.ApplicationWindow(self)
+    extensions.load_extensions(self)
 
   def parse_args(self):
     parser = argparse.ArgumentParser()
@@ -42,3 +44,9 @@ class Abominade(object):
     """Stop a8"""
     self.vim.stop()
 
+  def emit(self, signal, **kw):
+    for callback in self.signals[signal]:
+      callback(**kw)
+
+  def connect(self, signal, callback):
+    self.signals[signal].append(callback)

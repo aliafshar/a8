@@ -139,7 +139,7 @@ class VimManager(delegates.SlaveView):
     log.debug('Signal: Leave')
     gtk.main_quit()
 
-  def onvim_BufWritePost(self, bufid):
-    print bufid, 'saved'
+  def onvim_BufWritePost(self, bufid, filename):
+    self.model.emit('file-saved', filename=filename)
 
 

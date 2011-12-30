@@ -33,6 +33,7 @@ class File(lists.ListItem):
     self.isdir = os.path.isdir(self.filename)
     self.isdir_key = (self.isdir and 'a' or 'b', self.lowname)
     self.hidden = HIDDEN_PATTERN.match(self.basename)
+    self.annotation = ''
 
   @property
   def markup_args(self):
@@ -54,7 +55,8 @@ class FileManager(lists.ListView):
   ICON  = 'folder.png'
   COLUMNS = [
     objectlist.Column('icon', type=gtk.gdk.Pixbuf),
-    objectlist.Column('markup')
+    objectlist.Column('annotation', use_markup=True, expand=False),
+    objectlist.Column('markup'),
   ]
 
   TOOL_ACTIONS = [
@@ -83,6 +85,7 @@ class FileManager(lists.ListView):
   def browse_item(self, item):
     if not item.hidden:
       self.items.append(item)
+      self.model.emit('file-item-added', item=item)
 
   def on_items__item_activated(self, items, item):
     if item.isdir:

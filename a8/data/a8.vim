@@ -299,8 +299,8 @@ class VimDBUSService(Object):
   def BufWritePre(self, signature='s'):
     pass
 
-  @signal(VIM_NS, signature='s')
-  def BufWritePost(self, bufid):
+  @signal(VIM_NS, signature='ss')
+  def BufWritePost(self, bufid, filename):
     pass
 
   @signal(VIM_NS)
@@ -366,19 +366,15 @@ silent au! VimCommsDBus
 silent au VimCommsDBus BufEnter * silent call VimSignal('BufEnter', expand('<abuf>'), expand('<amatch>'))
 silent au VimCommsDBus BufNew * silent call VimSignal('BufNew', expand('<abuf>'))
 silent au VimCommsDBus BufNewFile * silent call VimSignal('BufNewFile', expand('<abuf>'))
-
 silent au VimCommsDBus BufReadPre * silent call VimSignal('BufReadPre', expand('<abuf>'))
 silent au VimCommsDBus BufReadPost * silent call VimSignal('BufReadPost', expand('<abuf>'))
-
 silent au VimCommsDBus BufWritePre * silent call VimSignal('BufWritePre', expand('<abuf>'))
-silent au VimCommsDBus BufWritePost * silent call VimSignal('BufWritePost', expand('<abuf>'))
-
+silent au VimCommsDBus BufWritePost * silent call VimSignal('BufWritePost', expand('<abuf>'), expand('<amatch>'))
 silent au VimCommsDBus BufAdd * silent call VimSignal('BufAdd', expand('<abuf>'))
 silent au VimCommsDBus BufDelete * silent call VimSignal('BufDelete', expand('<abuf>'), expand('<amatch>'))
 silent au VimCommsDBus BufUnload * silent call VimSignal('BufUnload', expand('<abuf>'))
 silent au VimCommsDBus BufUnload * silent call VimSignal('BufHidden', expand('<abuf>'))
 silent au VimCommsDBus BufWipeout * silent call VimSignal('BufWipeout', expand('<abuf>'))
-
 silent au VimCommsDBus VimLeave * silent call VimSignal('VimLeave')
 silent au VimCommsDBus VimEnter * silent call VimSignal('VimEnter')
 silent au VimCommsDBus CursorMovedI,CursorMoved * silent call VimSignal('CursorMoved')
