@@ -9,7 +9,7 @@ from pygtkhelpers.ui import objectlist
 from pygtkhelpers import gthreads
 gthreads.initial_setup()
 
-from a8 import lists, resources, contexts
+from a8 import lists, resources, contexts, actions
 
 
 HIDDEN_MASKS = [
@@ -57,12 +57,17 @@ class FileManager(lists.ListView):
     objectlist.Column('markup')
   ]
 
+  TOOL_ACTIONS = [
+    actions.Action('refresh', 'Refresh', 'arrow_refresh_small.png')
+  ]
+
   def create_ui(self):
     lists.ListView.create_ui(self)
     self.items.sort_by('isdir_key')
 
   def browse(self, path=os.getcwd()):
     self.items.clear()
+    self.path = path
     task = gthreads.GeneratorTask(self.browse_work, self.browse_item)
     task.start(path)
     self.model.ui.focus_files()
@@ -91,6 +96,6 @@ class FileManager(lists.ListView):
     menu = context.create_menu()
     menu.popup(None, None, None, event.button, event.time)
 
-
-
+  def on_refresh_activate(self):
+    self.browse(self.path)
 

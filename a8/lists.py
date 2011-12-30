@@ -6,11 +6,11 @@
 
 import cgi
 
-import gtk
+import gtk, gtk.gdk
 from pygtkhelpers import delegates
 from pygtkhelpers.ui import objectlist
 
-from a8 import resources
+from a8 import resources, actions
 
 
 class ListItem(object):
@@ -33,6 +33,8 @@ class ListView(delegates.SlaveView):
   ICON    = 'application_xp_terminal.png'
   COLUMNS = [objectlist.Column('markup', use_markup=True)]
 
+  TOOL_ACTIONS = []
+
   def create_ui(self):
     """Create the user interface."""
     self.stack = gtk.VBox()
@@ -48,8 +50,32 @@ class ListView(delegates.SlaveView):
     """Create the tab widget."""
     vb = gtk.VBox()
     vb.set_spacing(3)
-    icon = resources.load_icon(self.ICON)
-    icon.set_tooltip_text(self.LABEL)
-    vb.pack_start(icon, expand=False)
+    self.tab_icon = resources.load_icon(self.ICON)
+    self.tab_icon.set_tooltip_text(self.LABEL)
+    self.tab_holder = gtk.EventBox()
+    self.tab_holder.add(self.tab_icon)
+    self.tab_icon.set_can_focus(False)
+    self.tab_holder.set_can_focus(False)
+    self.tab_holder.add_events(gtk.gdk.BUTTON_PRESS_MASK)
+    self.tab_holder.connect('button-press-event', self.on_tab_icon_button)
+    vb.pack_start(self.tab_holder, expand=False)
     vb.show_all()
     return vb
+
+  def create_tool_menu(self):
+    return actions.create_action_menu(self.TOOL_ACTIONS,
+                                      self.on_tool_activate)
+
+  def on_tool_activate(self, item):
+    action_key = item.get_data('action_key')
+    callback = getattr(self, 'on_%s_activate' % action_key, None)
+    if callback is None:
+      raise NotImplementedError(action_key)
+    else:
+      callback()
+
+  def on_tab_icon_button(self, icon, event):
+    if event.button == 3 and self.TOOL_ACTIONS:
+      menu = self.create_tool_menu()
+      menu.show_all()
+      menu.popup(None, None, None, event.button, event.time)
