@@ -34,6 +34,7 @@ shortcuts = {
   '<Alt>Down': 'next_buffer',
   '<Alt>Left': 'prev_terminal',
   '<Alt>Right': 'next_terminal',
+  '<Alt>g': 'refresh_files',
 }
 
 
@@ -154,4 +155,7 @@ class ShortcutManager(object):
 
   def on_focus_terminals_activate(self):
     self.model.ui.focus_terminals()
+
+  def on_refresh_files_activate(self):
+    self.model.files.on_refresh_activate()
 
