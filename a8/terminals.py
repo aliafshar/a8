@@ -455,6 +455,7 @@ class TerminalManager(lists.ListView):
     t = TerminalView(self.model)
     t.execute(argv, env, cwd)
     self.add_tab(t)
+    self.model.emit('terminal-executed', argv=argv, env=env, cwd=cwd)
 
   def on_items__item_activated(self, objectlist, item):
     self.book.set_current_page(self.book.page_num(item.widget))

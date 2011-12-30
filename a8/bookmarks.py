@@ -43,6 +43,7 @@ class BookmarkManager(lists.ListView):
 
   def add(self, target):
     self.items.append(BookMark(target))
+    self.model.emit('bookmark-item-added', filename=target)
     self.save()
 
   def create_ui(self):

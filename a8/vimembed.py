@@ -125,6 +125,7 @@ class VimManager(delegates.SlaveView):
       bufid = int(bufid)
       self.model.buffers.append(path)
     self.model.ui.set_title(path)
+    self.model.emit('file-opened', filename=filename)
 
   def onvim_BufNew(self, bufid):
     log.debug('New {0}', bufid)
@@ -134,6 +135,7 @@ class VimManager(delegates.SlaveView):
     if not path:
       return
     self.model.buffers.remove(path)
+    self.model.emit('file-closed', filename=filename)
 
   def onvim_VimLeave(self):
     log.debug('Signal: Leave')
