@@ -16,6 +16,7 @@ log = logbook.Logger('shortcuts')
 commands = [
   actions.Action('shell', 'Shell', 'application_xp_terminal.png'),
   actions.Action('browse_home', 'Browse home directory', 'house_go.png'),
+  actions.Action('config', 'Edit configuration', 'cog.png'),
   None,
   actions.Action('close_all_buffers', 'Close all buffers', 'cross.png'),
 ]
@@ -167,3 +168,6 @@ class ShortcutManager(object):
 
   def on_browse_home_activate(self):
     self.model.files.browse(os.path.expanduser('~'))
+
+  def on_config_activate(self):
+    self.model.vim.open_file(self.model.home.config_path)
