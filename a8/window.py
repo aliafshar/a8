@@ -17,6 +17,7 @@ class SplashScreen(object):
   """Splash screen."""
   def __init__(self):
     self.window = gtk.Window()
+    self.window.set_keep_above(True)
     self.window.set_decorated(False)
     self.window.set_position(gtk.WIN_POS_CENTER_ALWAYS)
     b = gtk.VBox()
@@ -63,10 +64,10 @@ class ApplicationWindow(delegates.WindowView):
     self.widget.set_title('Abominade loves you.')
     self.accel_group = self.model.shortcuts.create_group()
     self.widget.add_accel_group(self.accel_group)
-    self.splash.stop()
     self.set_title('')
     self.widget.resize(640, 480)
     self.widget.show_all()
+    self.splash.stop()
 
   def on_widget__delete_event(self, window, event):
     self.model.stop()

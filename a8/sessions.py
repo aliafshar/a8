@@ -41,6 +41,7 @@ class SessionManager(object):
 
   def start(self):
     if not self.model.config.get('session', True):
+      self.model.terminals.execute()
       return
     terminals = self.session.get('terminals', [])
     if terminals:

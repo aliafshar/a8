@@ -58,14 +58,16 @@ class VimManager(delegates.SlaveView):
     return env
 
   def get_vim_args(self):
-    return [
+    args = [
       self.vim_command,
       '--cmd', 'let A8_EMBEDDED=1',
       '--cmd', 'let A8_UID="{uid}"'.format(uid=bus.A8_UID),
       '--cmd', 'so {script}'.format(script=self.get_vim_script()),
       '--socketid', str(self.xid),
-      '-S', self.get_vim_session(),
     ]
+    if self.model.config.get('session', True):
+      args.extend(['-S', self.get_vim_session()])
+    return args
 
   def get_vim_session(self):
     path = self.model.home.path('a8_vim_session.vim')
