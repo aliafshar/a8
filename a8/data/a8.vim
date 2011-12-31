@@ -392,6 +392,6 @@ set nomore
 set guioptions-=T
 set guioptions-=m
 set guioptions+=c
-set ssop=
+set ssop=buffers,winsize,tabpages
 
 
