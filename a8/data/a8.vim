@@ -384,7 +384,6 @@ silent au VimCommsDBus VimLeave * silent call VimSignal('VimLeave')
 silent au VimCommsDBus VimEnter * silent call VimSignal('VimEnter')
 silent au VimCommsDBus CursorMovedI,CursorMoved * silent call VimSignal('CursorMoved')
 silent au VimCommsDBus SwapExists * let v:swapchoice='d'
-"silent au VimCommsDBus SessionLoadPost * 
 
 set hidden
 
