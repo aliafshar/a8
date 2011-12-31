@@ -65,7 +65,6 @@ class ApplicationWindow(delegates.WindowView):
     self.accel_group = self.model.shortcuts.create_group()
     self.widget.add_accel_group(self.accel_group)
     self.set_title('')
-    self.widget.resize(640, 480)
     self.widget.show_all()
     self.splash.stop()
 
