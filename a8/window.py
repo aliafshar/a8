@@ -70,6 +70,7 @@ class ApplicationWindow(delegates.WindowView):
 
   def on_widget__delete_event(self, window, event):
     self.model.stop()
+    return True
 
   def start(self):
     self.show_and_run()
