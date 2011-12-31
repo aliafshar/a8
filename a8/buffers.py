@@ -45,7 +45,6 @@ class BufferManager(lists.ListView):
 
   def create_ui(self):
     lists.ListView.create_ui(self)
-    #TODO(afshar) when there are a few more things here
     self.stack.pack_start(self.model.shortcuts.create_tools(), expand=False)
     self.filenames = {}
 
@@ -53,7 +52,9 @@ class BufferManager(lists.ListView):
     if filename not in self.filenames:
       self.filenames[filename] = buf = Buffer(self.model, filename)
       self.items.append(buf)
-    if not self.items.selected_item or self.items.selected_item.filename != filename:
+    if (self.items.get_selection() is None or
+        not self.items.selected_item or
+        self.items.selected_item.filename != filename):
       self.items.selected_item = self.filenames[filename]
 
   def remove(self, filename):
