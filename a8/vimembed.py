@@ -131,6 +131,9 @@ class VimManager(delegates.SlaveView):
       self.open_file(filename)
     self.grab_focus()
 
+  def onvim_BufEnter(self, bufid, filename):
+    self.onvim_BufAdd(bufid, filename)
+
   def onvim_BufAdd(self, bufid, filename):
     log.debug('Signal: Buffer {0} {1}'.format(bufid, filename))
     path = unicode(filename)
