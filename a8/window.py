@@ -113,8 +113,3 @@ class PluginTabs(delegates.SlaveView):
     self.book.set_current_page(self.book.page_num(delegate.widget))
     delegate.items.grab_focus()
 
-
-if __name__ == '__main__':
-  w = ApplicationWindow()
-  w.widget.resize(400, 400)
-  w.show_and_run()

@@ -68,7 +68,7 @@ class VimDBUSService(Object):
 
   @method(VIM_NS, in_signature='s')
   def open_file(self, path):
-    vim.command('confirm e %s' % path)
+    vim.command('silent confirm e %s' % path)
 
   @method(VIM_NS, in_signature='as')
   def open_files(self, paths):
@@ -384,6 +384,7 @@ silent au VimCommsDBus VimLeave * silent call VimSignal('VimLeave')
 silent au VimCommsDBus VimEnter * silent call VimSignal('VimEnter')
 silent au VimCommsDBus CursorMovedI,CursorMoved * silent call VimSignal('CursorMoved')
 silent au VimCommsDBus SwapExists * let v:swapchoice='d'
+"silent au VimCommsDBus SessionLoadPost * 
 
 set hidden
 
@@ -392,5 +393,6 @@ set nomore
 set guioptions-=T
 set guioptions-=m
 set guioptions+=c
+set ssop=
 
 

@@ -26,7 +26,9 @@ class Abominade(object):
     self.bookmarks = bookmarks.BookmarkManager(self)
     self.vim = vimembed.VimManager(self)
     self.ui = window.ApplicationWindow(self)
+    self.ui.widget.maximize()
     self.sessions = sessions.SessionManager(self)
+    self.sessions.start()
     extensions.load_extensions(self)
 
   def parse_args(self):
@@ -43,7 +45,6 @@ class Abominade(object):
   def stop(self):
     """Stop a8"""
     self.vim.stop()
-    self.sessions.save()
 
   def emit(self, signal, **kw):
     for callback in self.signals[signal]:

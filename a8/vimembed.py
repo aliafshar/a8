@@ -44,8 +44,12 @@ class VimManager(delegates.SlaveView):
     self.vim = bus.connect('vim')
     self.connect_vim_signals()
 
+  def save_session(self):
+    self.vim.command('mks! {0}'.format(self.get_vim_session()))
+
   def stop(self):
     self.grab_focus()
+    self.model.sessions.save()
     self.vim.quit(**self.null_callback)
 
   def get_vim_env(self):
@@ -60,7 +64,15 @@ class VimManager(delegates.SlaveView):
       '--cmd', 'let A8_UID="{uid}"'.format(uid=bus.A8_UID),
       '--cmd', 'so {script}'.format(script=self.get_vim_script()),
       '--socketid', str(self.xid),
+      '-S', self.get_vim_session(),
     ]
+
+  def get_vim_session(self):
+    path = self.model.home.path('a8_vim_session.vim')
+    if not os.path.exists(path):
+      f = open(path, 'w')
+      f.close()
+    return path
 
   def get_vim_script(self):
     return resources.get_resource_path('a8.vim')
@@ -88,7 +100,6 @@ class VimManager(delegates.SlaveView):
     gobject.idle_add(self.holder.child_focus, gtk.DIR_TAB_FORWARD)
 
   def open_file(self, filename):
-    self.grab_focus()
     self.vim.open_file(filename)
 
   def close(self, filename):
@@ -103,11 +114,9 @@ class VimManager(delegates.SlaveView):
     self.vim.goto_line(line)
 
   def next(self):
-    self.grab_focus()
     self.vim.next()
 
   def prev(self):
-    self.grab_focus()
     self.vim.prev()
 
   def connect_vim_signals(self):
@@ -119,7 +128,6 @@ class VimManager(delegates.SlaveView):
     log.debug('Signal: Enter')
     for filename in self.model.args.files:
       self.open_file(filename)
-    self.model.sessions.start()
     self.grab_focus()
 
   def onvim_BufEnter(self, bufid, filename):
