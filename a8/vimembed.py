@@ -45,6 +45,7 @@ class VimManager(delegates.SlaveView):
     self.connect_vim_signals()
 
   def stop(self):
+    self.grab_focus()
     self.vim.quit(**self.null_callback)
 
   def get_vim_env(self):
@@ -87,21 +88,26 @@ class VimManager(delegates.SlaveView):
     gobject.idle_add(self.holder.child_focus, gtk.DIR_TAB_FORWARD)
 
   def open_file(self, filename):
+    self.grab_focus()
     self.vim.open_file(filename)
 
   def close(self, filename):
+    self.grab_focus()
     self.vim.close_buffer(filename)
 
   def close_all(self):
+    self.grab_focus()
     self.vim.close_all_buffers()
 
   def goto_line(self, line):
     self.vim.goto_line(line)
 
   def next(self):
+    self.grab_focus()
     self.vim.next()
 
   def prev(self):
+    self.grab_focus()
     self.vim.prev()
 
   def connect_vim_signals(self):

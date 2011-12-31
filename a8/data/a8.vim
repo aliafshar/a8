@@ -140,7 +140,7 @@ class VimDBUSService(Object):
 
   @method(VIM_NS)
   def quit(self):
-    vim.command('q!')
+    vim.command('confirm qall')
 
   @method(VIM_NS)
   def get_current_line(self):
