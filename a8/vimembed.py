@@ -49,7 +49,6 @@ class VimManager(delegates.SlaveView):
 
   def stop(self):
     self.grab_focus()
-    self.model.sessions.save()
     self.vim.quit(**self.null_callback)
 
   def get_vim_env(self):
