@@ -8,7 +8,9 @@
 import os
 
 import gtk
+import psutil
 import logbook
+import webbrowser
 
 from a8 import actions
 
@@ -109,8 +111,6 @@ class LocalContext(BaseContext):
     elif os.path.exists(self.data):
       log.debug('file')
       return self.create_file_menu()
-    else:
-      return self.create_non_menu(self.data)
 
   def create_dir_menu(self):
     return self.create_action_menu(self.dir_actions)
@@ -146,13 +146,45 @@ class LocalContext(BaseContext):
 class UriContext(BaseContext):
   """Context for URIs."""
 
+  name = 'URI Context'
   expr = r'https{0,1}://\S+'
+
+  uri_actions = [
+    actions.Action('browse_uri', 'Open', 'world_go.png'),
+  ]
+
+  def on_browse_uri_activate(self):
+    webbrowser.open_new_tab(self.data)
+
+  def create_menu(self):
+    return self.create_action_menu(self.uri_actions)
 
 
 class IntegerContext(BaseContext):
   """Context for integers."""
 
-  expr = r'\d+'
+  expr = r'[0-9]+'
+  name = 'Integer context'
+
+  int_actions = [
+    actions.Action('term', 'SIGTERM', 'asterisk_yellow.png'),
+    actions.Action('kill', 'SIGKILL', 'asterisk_orange.png'),
+  ]
+
+  def create_menu(self):
+    try:
+      pid = int(self.data)
+      self.proc = psutil.Process(pid)
+      menu = self.create_action_menu(self.int_actions)
+    except (ValueError, psutil.NoSuchProcess):
+      menu = None
+    return menu
+
+  def on_kill_activate(self):
+    self.proc.kill()
+
+  def on_term_activate(self):
+    self.proc.terminate()
 
 
 class ContextManager(object):

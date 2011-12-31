@@ -361,6 +361,8 @@ class TerminalView(delegates.SlaveView, lists.ListItem):
 
   def on_match_menu(self, context, event):
     menu = context.create_menu()
+    if menu is None:
+      return
     menu.popup(None, None, None, event.button, event.time)
 
   def on_match_default(self, context, event):
