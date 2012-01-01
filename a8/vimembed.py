@@ -130,6 +130,7 @@ class VimManager(delegates.SlaveView):
     for filename in self.model.args.files:
       self.open_file(filename)
     self.grab_focus()
+    self.model.ui.splash.stop()
 
   def onvim_BufEnter(self, bufid, filename):
     self.onvim_BufAdd(bufid, filename)

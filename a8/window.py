@@ -7,38 +7,46 @@ import gtk
 
 from pygtkhelpers import delegates, utils
 
-from a8 import shortcuts, resources
+from a8 import shortcuts, resources, version
 
 
 gtk.window_set_default_icon(resources.load_icon('a8.png').get_pixbuf())
 
 
-class SplashScreen(object):
+SPLASH_TEMPLATE = """
+<small>abominade <b>{0}</b></small>
+<b><tt>&#9829;</tt></b> you
+<small>and is starting.</small>
+""".strip()
+
+
+class SplashScreen(delegates.SlaveView):
   """Splash screen."""
-  def __init__(self):
-    self.window = gtk.Window()
-    self.window.set_keep_above(True)
-    self.window.set_decorated(False)
-    self.window.set_position(gtk.WIN_POS_CENTER_ALWAYS)
-    b = gtk.VBox()
-    b.set_border_width(40)
+  def create_ui(self):
+    a = gtk.Alignment(0.5, 0.5)
+    b = gtk.HBox()
+    b.set_spacing(40)
+    a.add(b)
+    a.set_border_width(30)
     b.set_spacing(3)
-    self.window.add(b)
-    b.pack_start(resources.load_icon('a8.png'))
+    self.widget.add(a)
+    b.pack_start(resources.load_icon('a8.png'), expand=False)
+    b.pack_start(gtk.Label('   '))
     l = gtk.Label()
-    l.set_markup('<small>abominade <b><tt>&#9829;</tt></b> you</small>')
+    l.set_justify(gtk.JUSTIFY_CENTER)
+    l.set_markup(SPLASH_TEMPLATE.format(version.VERSION))
     l.set_use_markup(True)
     b.pack_start(l, expand=False)
-
-  def start(self):
-    """Launch the splash screen."""
-    self.window.show_all()
     utils.refresh_gui()
+
+  def start(self, parent):
+    """Launch the splash screen."""
+    self.parent = parent
+    self.parent.stack.pack_start(self.widget, expand=False)
 
   def stop(self):
     """Stop the splash screen."""
-    self.window.hide()
-    self.window.destroy()
+    self.parent.stack.remove(self.widget)
 
 
 class ApplicationWindow(delegates.WindowView):
@@ -46,10 +54,12 @@ class ApplicationWindow(delegates.WindowView):
 
   def create_ui(self):
     """Create the user interface."""
+    self.stack = gtk.VBox()
+    self.widget.add(self.stack)
     self.splash = SplashScreen()
-    self.splash.start()
+    self.splash.start(self)
     self.hpaned = gtk.HPaned()
-    self.widget.add(self.hpaned)
+    self.stack.pack_end(self.hpaned)
     self.vpaned = gtk.VPaned()
     self.hpaned.pack2(self.vpaned)
     self.hpaned.set_position(200)
@@ -66,7 +76,6 @@ class ApplicationWindow(delegates.WindowView):
     self.widget.add_accel_group(self.accel_group)
     self.set_title('')
     self.widget.show_all()
-    self.splash.stop()
 
   def on_widget__delete_event(self, window, event):
     self.model.stop()
