@@ -34,7 +34,13 @@ class Abominade(object):
   def parse_args(self):
     parser = argparse.ArgumentParser()
     parser.add_argument('files', nargs='*', help='Files to open.')
+    parser.add_argument('--no-session', action='store_true')
+    parser.add_argument('--show-toolbar', action='store_true')
     self.args = parser.parse_args()
+    if self.args.no_session:
+      self.config.opts['session'] = False
+    if self.args.show_toolbar:
+      self.config.opts['toolbar'] = True
 
   def start(self):
     """Start a8"""
