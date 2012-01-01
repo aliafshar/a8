@@ -26,7 +26,7 @@ class Buffer(lists.ListItem):
     self.basename = os.path.basename(filename)
     bookmark = self.model.bookmarks.shortest_path(filename)
     if bookmark:
-      supname = self.dirname.replace(bookmark.target, '')
+      supname = self.dirname.replace(bookmark.target, '').lstrip('/')
       self.dispname = '{0}:{1}'.format(bookmark.basename, supname)
     else:
       self.dispname = self.dirname
@@ -56,7 +56,8 @@ class BufferManager(lists.ListView):
     if (self.items.get_selection() is None or
         not self.items.selected_item or
         self.items.selected_item.filename != filename):
-      self.items.selected_item = self.filenames[filename]
+      b = self.items.selected_item = self.filenames[filename]
+      self.model.ui.set_title('{0}/{1}'.format(b.dispname, b.basename))
 
   def remove(self, filename):
     if filename in self.filenames:
