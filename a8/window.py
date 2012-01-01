@@ -13,42 +13,6 @@ from a8 import shortcuts, resources, version
 gtk.window_set_default_icon(resources.load_icon('a8.png').get_pixbuf())
 
 
-SPLASH_TEMPLATE = """
-<small>abominade <b>{0}</b></small>
-<b><tt>&#9829;</tt></b> you
-<small>and is starting.</small>
-""".strip()
-
-
-class SplashScreen(delegates.SlaveView):
-  """Splash screen."""
-  def create_ui(self):
-    a = gtk.Alignment(0.5, 0.5)
-    b = gtk.HBox()
-    b.set_spacing(40)
-    a.add(b)
-    a.set_border_width(30)
-    b.set_spacing(3)
-    self.widget.add(a)
-    b.pack_start(resources.load_icon('a8.png'), expand=False)
-    b.pack_start(gtk.Label('   '))
-    l = gtk.Label()
-    l.set_justify(gtk.JUSTIFY_CENTER)
-    l.set_markup(SPLASH_TEMPLATE.format(version.VERSION))
-    l.set_use_markup(True)
-    b.pack_start(l, expand=False)
-    utils.refresh_gui()
-
-  def start(self, parent):
-    """Launch the splash screen."""
-    self.parent = parent
-    self.parent.stack.pack_start(self.widget, expand=False)
-
-  def stop(self):
-    """Stop the splash screen."""
-    self.parent.stack.remove(self.widget)
-
-
 class ApplicationWindow(delegates.WindowView):
   """Main application window."""
 
@@ -56,8 +20,6 @@ class ApplicationWindow(delegates.WindowView):
     """Create the user interface."""
     self.stack = gtk.VBox()
     self.widget.add(self.stack)
-    self.splash = SplashScreen()
-    self.splash.start(self)
     self.hpaned = gtk.HPaned()
     self.stack.pack_end(self.hpaned)
     self.vpaned = gtk.VPaned()
