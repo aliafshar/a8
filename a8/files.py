@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*- 
-# (c) 2005-2011 PIDA Authors
+# (c) 2005-2012 PIDA Authors
 # vim: ft=python sw=2 ts=2 sts=2 tw=80
 
-import os, re
 
+import os, re
 import gtk
 from pygtkhelpers.ui import objectlist
 from pygtkhelpers import gthreads

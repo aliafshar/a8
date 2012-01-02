@@ -1,18 +1,18 @@
 # -*- coding: utf-8 -*- 
-# (c) 2005-2011 PIDA Authors
+# (c) 2005-2012 PIDA Authors
 # vim: ft=python sw=2 ts=2 sts=2 tw=80
+
 
 """Application contexts."""
 
 
 import os
-
 import gtk
 import psutil
 import logbook
 import webbrowser
-
 from a8 import actions
+
 
 log = logbook.Logger('Contexts')
 log.debug('Log start')

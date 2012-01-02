@@ -1,4 +1,4 @@
-# (c) 2005-2011 PIDA Authors
+# (c) 2005-2012 PIDA Authors
 
 
 test-build: clean
