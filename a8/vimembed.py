@@ -109,7 +109,7 @@ class VimManager(delegates.SlaveView):
 
   def close_all(self):
     self.grab_focus()
-    self.vim.close_all_buffers(, **self.null_callback)
+    self.vim.close_all_buffers(**self.null_callback)
 
   def goto_line(self, line):
     self.vim.goto_line(line, **self.null_callback)
