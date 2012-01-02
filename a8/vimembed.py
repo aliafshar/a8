@@ -105,20 +105,20 @@ class VimManager(delegates.SlaveView):
 
   def close(self, filename):
     self.grab_focus()
-    self.vim.close_buffer(filename)
+    self.vim.close_buffer(filename, **self.null_callback)
 
   def close_all(self):
     self.grab_focus()
-    self.vim.close_all_buffers()
+    self.vim.close_all_buffers(, **self.null_callback)
 
   def goto_line(self, line):
-    self.vim.goto_line(line)
+    self.vim.goto_line(line, **self.null_callback)
 
   def next(self):
-    self.vim.next()
+    self.vim.next(**self.null_callback)
 
   def prev(self):
-    self.vim.prev()
+    self.vim.prev(**self.null_callback)
 
   def connect_vim_signals(self):
     for k in dir(self):
