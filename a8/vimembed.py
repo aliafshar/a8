@@ -101,7 +101,7 @@ class VimManager(delegates.SlaveView):
     gobject.idle_add(self.holder.child_focus, gtk.DIR_TAB_FORWARD)
 
   def open_file(self, filename):
-    self.vim.open_file(filename)
+    self.vim.open_file(filename, **self.null_callback)
 
   def close(self, filename):
     self.grab_focus()
