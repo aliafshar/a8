@@ -106,7 +106,7 @@ class VimDBUSService(Object):
 
   @method(VIM_NS, in_signature='s')
   def close_buffer(self, path):
-    vim.command('confirm bd%s' % self.get_buffer_number(path))
+    vim.command('confirm bd%s' % path)
 
   @method(VIM_NS, in_signature='i')
   def close_buffer_id(self, bufid):
