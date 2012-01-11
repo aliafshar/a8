@@ -46,7 +46,7 @@ class BaseContext(object):
 class LocalContext(BaseContext):
   """Context for files and directories."""
 
-  expr = '\S+'
+  expr = r'[^ :\$]+'
   name = 'Local filesystem context'
 
   dir_actions = [
@@ -108,6 +108,7 @@ class LocalContext(BaseContext):
 
   def create_menu(self):
     """Create a menu for the context."""
+    self.data = os.path.expanduser(self.data)
     if not os.path.isabs(self.data) and self.view is not None:
       log.debug('relative to "{0}"', self.view.cwd)
       self.data = os.path.join(self.view.cwd, self.data)
