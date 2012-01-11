@@ -81,7 +81,7 @@ class VimDBUSService(Object):
     # we don't want those
     return [
       buffer.name for buffer in vim.buffers
-      if int(vim.eval("buflisted(%s)"%buffer.number))
+      if int(vim.eval("buflisted(%s)" % buffer.number))
     ]
 
   @method(VIM_NS, in_signature='s', out_signature='i')
@@ -117,6 +117,12 @@ class VimDBUSService(Object):
   def close_all_buffers(self):
     for path in self.get_buffer_list():
       self.close_buffer(path)
+
+  @method(VIM_NS, in_signature='s')
+  def close_buffers_under(self, under_path):
+    for path in self.get_buffer_list():
+      if path.startswith(under_path):
+        self.close_buffer(path)
 
   @method(VIM_NS)
   def close_current_buffer(self):

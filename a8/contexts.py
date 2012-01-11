@@ -64,7 +64,13 @@ class LocalContext(BaseContext):
       'bookmark',
       'Add bookmark',
       'star.png'
-    )
+    ),
+    None,
+    actions.Action(
+      'close_under',
+      'Close any children',
+      'cross.png',
+    ),
   ]
 
   file_actions = [
@@ -141,6 +147,9 @@ class LocalContext(BaseContext):
 
   def on_open_file_activate(self):
     self.model.vim.open_file(self.data)
+
+  def on_close_under_activate(self):
+    self.model.vim.close_under(self.data)
 
 
 class UriContext(BaseContext):

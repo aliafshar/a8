@@ -40,7 +40,7 @@ class BookmarkManager(lists.ListView):
   ICON = 'star.png'
 
   remove_action = actions.Action('remove_bookmark', 'Remove Bookmark',
-                                 'cross.png')
+                                 'delete.png')
 
   def add(self, target):
     self.items.append(BookMark(target))
