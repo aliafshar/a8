@@ -39,6 +39,9 @@ class VimManager(delegates.SlaveView):
     self.vim_proc = None
     self.vim_pid = None
 
+  def on_holder__button_press_event(self, eventbox, event):
+    self.grab_focus()
+
   def connect_vim(self):
     log.debug('Connect')
     self.vim = bus.connect('vim')

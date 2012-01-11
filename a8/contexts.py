@@ -46,7 +46,7 @@ class BaseContext(object):
 class LocalContext(BaseContext):
   """Context for files and directories."""
 
-  expr = r'[^ :\$]+'
+  expr = '[^\n :\$]+'
   name = 'Local filesystem context'
 
   dir_actions = [
