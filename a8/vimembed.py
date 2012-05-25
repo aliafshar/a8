@@ -142,6 +142,9 @@ class VimManager(delegates.SlaveView):
     self.onvim_BufAdd(bufid, filename)
 
   def onvim_BufAdd(self, bufid, filename):
+    if not int(self.vim.eval('buflisted(%s)'%bufid)):
+      # ignore unlisted buffers
+      return
     log.debug('Signal: Buffer {0} {1}'.format(bufid, filename))
     path = unicode(filename)
     if not path or os.path.isdir(path):
