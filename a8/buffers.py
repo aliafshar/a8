@@ -72,7 +72,9 @@ class BufferManager(lists.ListView):
 
   def on_items__item_right_clicked(self, items, item, event):
     context = contexts.LocalContext(self.model, None, item.filename)
-    menu = context.create_menu()
+    context.create_menu()   # force expanding path, etc.
+    # only files should be here, and we want a menu even if file was deleted
+    menu = context.create_file_menu()
     if menu is not None:
       menu.popup(None, None, None, event.button, event.time)
 
