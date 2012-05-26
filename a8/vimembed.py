@@ -162,6 +162,7 @@ class VimManager(delegates.SlaveView):
     path = unicode(filename)
     if not path:
       return
+    path = os.path.realpath(path)
     self.model.buffers.remove(path)
     self.model.emit('file-closed', filename=filename)
 
