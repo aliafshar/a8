@@ -68,6 +68,7 @@ class FileManager(lists.ListView):
 
   def browse(self, path=os.getcwd()):
     self.items.clear()
+    path = os.path.normpath(path)
     self.path = path
     task = gthreads.GeneratorTask(self.browse_work, self.browse_item)
     task.start(path)
