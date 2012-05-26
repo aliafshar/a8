@@ -37,6 +37,7 @@ class ApplicationWindow(delegates.WindowView):
     self.accel_group = self.model.shortcuts.create_group()
     self.widget.add_accel_group(self.accel_group)
     self.set_title('')
+    self.widget.set_default_size(800, 600)
     self.widget.show_all()
 
   def on_widget__delete_event(self, window, event):
