@@ -44,6 +44,10 @@ class BufferManager(lists.ListView):
   LABEL = 'Buffers'
   ICON  = 'page_white_stack.png'
 
+  COLUMNS = [objectlist.Column('markup', use_markup=True),
+             objectlist.Column('bufid', visible=False),
+             objectlist.Column('basename', visible=False, searchable=True)]
+
   def create_ui(self):
     lists.ListView.create_ui(self)
     if self.model.config.get('toolbar', False):
