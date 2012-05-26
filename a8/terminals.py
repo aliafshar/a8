@@ -37,7 +37,7 @@ class TerminalConfiguration(object):
     'backspace_binding': Unset,
     'cursor_blink_mode': Unset,
     'cursor_shape': Unset,
-    'font_desc': Unset,
+    'font': Unset,
     'allow_bold': Unset,
     'audible_bell': Unset,
     'emulation': Unset,
