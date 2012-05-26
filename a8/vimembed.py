@@ -147,7 +147,7 @@ class VimManager(delegates.SlaveView):
     if not path or os.path.isdir(path):
       path = ''
     else:
-      if not os.path.abspath(path):
+      if not os.path.isabs(path):
         cwd = self.vim.get_cwd()
         path = os.path.join(cwd, path)
       path = os.path.realpath(path)
