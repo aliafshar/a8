@@ -152,7 +152,7 @@ class VimManager(delegates.SlaveView):
         path = os.path.join(cwd, path)
       path = os.path.realpath(path)
       bufid = int(bufid)
-      self.model.buffers.append(path)
+      self.model.buffers.append(path, bufid)
     self.model.emit('file-opened', filename=filename)
 
   def onvim_BufNew(self, bufid):

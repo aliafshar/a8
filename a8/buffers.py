@@ -19,9 +19,10 @@ class Buffer(lists.ListItem):
 
   MARKUP_TEMPLATE = '<b>{0}</b>\n<span size="x-small">{1}</span>'
 
-  def __init__(self, model, filename):
+  def __init__(self, model, filename, bufid):
     self.model = model
     self.filename = filename
+    self.bufid = bufid
     self.dirname = os.path.dirname(filename)
     self.basename = os.path.basename(filename)
     bookmark = self.model.bookmarks.shortest_path(filename)
@@ -48,10 +49,11 @@ class BufferManager(lists.ListView):
     if self.model.config.get('toolbar', False):
       self.stack.pack_start(self.model.shortcuts.create_tools(), expand=False)
     self.filenames = {}
+    self.items.sort_by('bufid')
 
-  def append(self, filename):
+  def append(self, filename, bufid):
     if filename not in self.filenames:
-      self.filenames[filename] = buf = Buffer(self.model, filename)
+      self.filenames[filename] = buf = Buffer(self.model, filename, bufid)
       self.items.append(buf)
     if (self.items.get_selection() is None or
         not self.items.selected_item or
