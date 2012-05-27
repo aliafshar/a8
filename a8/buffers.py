@@ -69,6 +69,8 @@ class BufferManager(lists.ListView):
     if filename in self.filenames:
       buf = self.filenames.pop(filename)
       self.items.remove(buf)
+      if len(self.items) == 0:  # removed last item
+        self.model.ui.set_title('')
 
   def on_items__item_activated(self, items, item):
     self.model.vim.open_file(item.filename)
