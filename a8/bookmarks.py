@@ -6,6 +6,7 @@
 import os
 import gtk
 import yaml
+from pygtkhelpers.ui import objectlist
 
 from a8 import lists, contexts, actions
 
@@ -38,6 +39,11 @@ class BookmarkManager(lists.ListView):
 
   LABEL = 'Bookmarks'
   ICON = 'star.png'
+
+  COLUMNS = [
+    objectlist.Column('markup', use_markup=True),
+    objectlist.Column('basename', visible=False, searchable=True),
+  ]
 
   remove_action = actions.Action('remove_bookmark', 'Remove Bookmark',
                                  'delete.png')
