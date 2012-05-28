@@ -55,7 +55,8 @@ class FileManager(lists.ListView):
   ICON  = 'folder.png'
   COLUMNS = [
     objectlist.Column('icon', type=gtk.gdk.Pixbuf),
-    objectlist.Column('markup', use_markup=True, searchable=True),
+    objectlist.Column('markup', use_markup=True),
+    objectlist.Column('basename', visible=False, searchable=True),
   ]
 
   TOOL_ACTIONS = [
