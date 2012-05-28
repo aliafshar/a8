@@ -333,6 +333,11 @@ class TerminalView(delegates.SlaveView, lists.ListItem):
     self.pid = None
     self.terminal.feed('\x1b[0;1;34mExited, status: \x1b[0;1;31m{0}'.format(
       self.terminal.get_child_exit_status()))
+    self.terminal.connect('key-press-event', self._on_keypress_after_exit)
+
+  def _on_keypress_after_exit(self, terminal, event):
+    if event.keyval == gtk.keysyms.Return:
+      self.close()
 
   def on_terminal__window_title_changed(self, terminal):
     pass
