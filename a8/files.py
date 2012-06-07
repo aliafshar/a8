@@ -67,7 +67,9 @@ class FileManager(lists.ListView):
     lists.ListView.create_ui(self)
     self.items.sort_by('isdir_key')
 
-  def browse(self, path=os.getcwd()):
+  def browse(self, path=None):
+    if path is None:
+      path = os.getcwd()
     self.items.clear()
     path = os.path.normpath(path)
     self.path = path

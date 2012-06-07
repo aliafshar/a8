@@ -7,6 +7,7 @@
 
 import collections
 import argparse
+import os
 
 from a8 import (terminals, files, buffers, vimembed, window, config, bookmarks,
                 shortcuts, extensions, sessions)
@@ -19,6 +20,10 @@ class Abominade(object):
     self.home = config.InstanceDirectory()
     self.config = self.home.load_config()
     self.parse_args()
+    if len(self.args.files) == 1 and os.path.isdir(self.args.files[0]):
+      # cd into single dir instead of opening in vim
+      os.chdir(self.args.files[0])
+      self.args.files.pop(0)
     self.shortcuts = shortcuts.ShortcutManager(self)
     self.files = files.FileManager(self)
     self.buffers = buffers.BufferManager(self)
