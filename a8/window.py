@@ -13,7 +13,24 @@ from a8 import shortcuts, resources, version
 gtk.window_set_default_icon(resources.load_icon('a8.png').get_pixbuf())
 
 
-class ApplicationWindow(delegates.WindowView):
+class A8Window(delegates.WindowView):
+
+  def post_configure(self):
+    self.widget.set_title('Abominade loves you.')
+    self.accel_group = self.model.shortcuts.create_group()
+    self.widget.add_accel_group(self.accel_group)
+    self.set_title('')
+    self.widget.set_default_size(800, 600)
+    self.widget.show_all()
+
+
+class TerminalWindow(A8Window):
+
+  def create_ui(self):
+    self.post_configure()
+
+
+class ApplicationWindow(A8Window):
   """Main application window."""
 
   def create_ui(self):
@@ -32,13 +49,12 @@ class ApplicationWindow(delegates.WindowView):
     self.plugins.add_tab(self.model.bookmarks)
     self.plugins.add_tab(self.model.terminals)
     self.vpaned.pack1(self.model.vim.widget, resize=True, shrink=False)
-    self.vpaned.pack2(self.model.terminals.book, resize=False, shrink=False)
-    self.widget.set_title('Abominade loves you.')
-    self.accel_group = self.model.shortcuts.create_group()
-    self.widget.add_accel_group(self.accel_group)
-    self.set_title('')
-    self.widget.set_default_size(800, 600)
-    self.widget.show_all()
+    if self.model.config.get('terminal_window'):
+      w = TerminalWindow(self.model)
+      w.widget.add(self.model.terminals.book)
+    else:
+      self.vpaned.pack2(self.model.terminals.book, resize=False, shrink=False)
+    self.post_configure()
 
   def on_widget__delete_event(self, window, event):
     self.model.stop()
