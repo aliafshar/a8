@@ -62,6 +62,7 @@ class VimManager(delegates.SlaveView):
   def get_vim_args(self):
     args = [
       self.vim_command,
+      '-f',
       '--cmd', 'let A8_EMBEDDED=1',
       '--cmd', 'let A8_UID="{uid}"'.format(uid=bus.A8_UID),
       '--cmd', 'so {script}'.format(script=self.get_vim_script()),
