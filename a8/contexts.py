@@ -108,6 +108,16 @@ class LocalContext(BaseContext):
 
   def create_menu(self):
     """Create a menu for the context."""
+    raw_data = self.data
+    menu = self._create_menu()
+    if menu is None:
+      # check for 'a/FOO' and 'b/FOO' formats commonly used in diffs
+      if raw_data.startswith('a/') or raw_data.startswith('b/'):
+        self.data = raw_data[2:]
+        menu = self._create_menu()
+    return menu
+
+  def _create_menu(self):
     self.data = os.path.expanduser(self.data)
     if not os.path.isabs(self.data) and self.view is not None:
       log.debug('relative to "{0}"', self.view.cwd)
