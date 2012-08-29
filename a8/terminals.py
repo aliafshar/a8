@@ -443,6 +443,7 @@ class TerminalManager(lists.ListView):
 
   def add_tab(self, delegate):
     self.book.append_page(delegate.widget, delegate.create_tab_widget())
+    self.book.set_tab_reorderable(delegate.widget, True)
     self.book.show_all()
     self.book.set_current_page(self.book.page_num(delegate.widget))
     self.items.append(delegate)
