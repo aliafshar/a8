@@ -292,7 +292,8 @@ class TerminalView(delegates.SlaveView, lists.ListItem):
 
   def execute(self, argv=None, env=None, cwd=None):
     if argv is None:
-      argv = ['bash']
+      shell_prog = os.environ.get('SHELL', 'bash')
+      argv = [shell_prog]
     if env is None:
       env = self.env_map_to_list(os.environ.copy())
     if cwd is None:
