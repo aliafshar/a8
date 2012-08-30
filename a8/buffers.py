@@ -25,18 +25,21 @@ class Buffer(lists.ListItem):
     self.bufid = bufid
     self.dirname = os.path.dirname(filename)
     self.basename = os.path.basename(filename)
-    bookmark = self.model.bookmarks.shortest_path(filename)
-    if bookmark:
-      supname = self.dirname.replace(bookmark.target, '').lstrip('/')
-      self.dispname = '{0}:{1}'.format(bookmark.basename, supname)
-    else:
-      self.dispname = self.dirname
+    self.update_dispname()
 
   @property
   def markup_args(self):
     """Display in the buffer list."""
     return (self.basename, self.dispname)
 
+  def update_dispname(self):
+    """Set or reset display name based on path and bookmarks"""
+    bookmark = self.model.bookmarks.shortest_path(self.filename)
+    if bookmark:
+      supname = self.dirname.replace(bookmark.target, '').lstrip('/')
+      self.dispname = '{0}:{1}'.format(bookmark.basename, supname)
+    else:
+      self.dispname = self.dirname
 
 class BufferManager(lists.ListView):
   """Buffer list."""
@@ -71,6 +74,10 @@ class BufferManager(lists.ListView):
       self.items.remove(buf)
       if len(self.items) == 0:  # removed last item
         self.model.ui.set_title('')
+
+  def refresh(self):
+    for item in self.items:
+      item.update_dispname()
 
   def on_items__item_activated(self, items, item):
     self.model.vim.open_file(item.filename)

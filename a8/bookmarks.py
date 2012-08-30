@@ -52,6 +52,7 @@ class BookmarkManager(lists.ListView):
     self.items.append(BookMark(target))
     self.model.emit('bookmark-item-added', filename=target)
     self.save()
+    self.model.buffers.refresh()
 
   def create_ui(self):
     lists.ListView.create_ui(self)
@@ -116,6 +117,7 @@ class BookmarkManager(lists.ListView):
   def on_remove_item_activate(self, menuitem):
     self.items.remove(self.items.selected_item)
     self.save()
+    self.model.buffers.refresh()
 
   def on_items__item_activated(self, objectlist, item):
     self.activate(item)
