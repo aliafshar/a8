@@ -128,6 +128,9 @@ class VimManager(delegates.SlaveView):
   def prev(self):
     self.vim.prev(**self.null_callback)
 
+  def get_current_buffer_id(self):
+    return self.vim.get_current_buffer_id()
+
   def connect_vim_signals(self):
     for k in dir(self):
       if k.startswith('onvim_'):

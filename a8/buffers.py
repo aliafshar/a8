@@ -56,11 +56,12 @@ class BufferManager(lists.ListView):
     if self.model.config.get('toolbar', False):
       self.stack.pack_start(self.model.shortcuts.create_tools(), expand=False)
     self.filenames = {}
-    self.items.sort_by('bufid')
+    self.bufids = {}
 
   def append(self, filename, bufid):
     if filename not in self.filenames:
       self.filenames[filename] = buf = Buffer(self.model, filename, bufid)
+      self.bufids[bufid] = buf
       self.items.append(buf)
     if (self.items.get_selection() is None or
         not self.items.selected_item or
@@ -72,12 +73,19 @@ class BufferManager(lists.ListView):
     if filename in self.filenames:
       buf = self.filenames.pop(filename)
       self.items.remove(buf)
+      if buf.bufid in self.bufids:
+        del self.bufids[buf.bufid]
       if len(self.items) == 0:  # removed last item
         self.model.ui.set_title('')
 
   def refresh(self):
     for item in self.items:
       item.update_dispname()
+
+  def get_activated_item(self):
+    bufid = self.model.vim.get_current_buffer_id()
+    item = self.bufids.get(bufid)
+    return item
 
   def on_items__item_activated(self, items, item):
     self.model.vim.open_file(item.filename)

@@ -67,6 +67,16 @@ class ListView(delegates.SlaveView):
     return actions.create_action_menu(self.TOOL_ACTIONS,
                                       self.on_tool_activate)
 
+  def get_item_index(self, item):
+    for i, cur_item in enumerate(self.items):
+      if cur_item is item:
+        return i
+    return None
+
+  def activate_item(self, item):
+    item_index = self.get_item_index(item)
+    self.items.row_activated(item_index, self.items.get_columns()[0])
+
   def on_tool_activate(self, item):
     action_key = item.get_data('action_key')
     callback = getattr(self, 'on_%s_activate' % action_key, None)

@@ -137,10 +137,20 @@ class ShortcutManager(object):
     self.model.terminals.grab_focus()
 
   def on_prev_buffer_activate(self):
-    self.model.vim.prev()
+    item = self.model.buffers.get_activated_item()
+    if item is not None:
+      item_index = self.model.buffers.get_item_index(item)
+      prev_item_index = (item_index - 1) % len(self.model.buffers.items)
+      prev_item = self.model.buffers.items[prev_item_index]
+      self.model.buffers.activate_item(prev_item)
 
   def on_next_buffer_activate(self):
-    self.model.vim.next()
+    item = self.model.buffers.get_activated_item()
+    if item is not None:
+      item_index = self.model.buffers.get_item_index(item)
+      next_item_index = (item_index + 1) % len(self.model.buffers.items)
+      next_item = self.model.buffers.items[next_item_index]
+      self.model.buffers.activate_item(next_item)
 
   def on_prev_terminal_activate(self):
     self.model.terminals.prev()
