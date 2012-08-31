@@ -36,6 +36,7 @@ shortcuts = {
   '<Alt>Right': 'next_terminal',
   '<Alt>g': 'refresh_files',
   '<Alt>c': 'close_all_buffers',
+  '<Alt>x': 'toggle_expanded_files',
   '<Alt>h': 'browse_home',
 }
 
@@ -175,6 +176,9 @@ class ShortcutManager(object):
 
   def on_close_all_buffers_activate(self):
     self.model.vim.close_all()
+
+  def on_toggle_expanded_files_activate(self):
+    self.model.files.toggle_expanded()
 
   def on_browse_home_activate(self):
     self.model.files.browse(os.path.expanduser('~'))

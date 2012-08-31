@@ -9,7 +9,7 @@ from a8 import resources
 
 class Action(object):
   """Doing something in the IDE."""
-  def __init__(self, key, label, icon):
+  def __init__(self, key, label, icon=None):
     self.key = key
     self.label = label
     self.icon = icon
@@ -18,7 +18,8 @@ class Action(object):
     """Create a menu item from an action."""
     item = gtk.ImageMenuItem()
     item.set_label(self.label)
-    item.set_image(resources.load_icon(self.icon))
+    if self.icon is not None:
+      item.set_image(resources.load_icon(self.icon))
     item.set_always_show_image(True)
     item.set_data('action_key', self.key)
     return item
