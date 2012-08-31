@@ -104,7 +104,7 @@ class FileManager(lists.ListView):
     for dirpath, dirnames, filenames in os.walk(path):
       # prune hidden dirs, and walk in sorting order
       dirnames[:] = sorted([d for d in dirnames if not HIDDEN_PATTERN.match(d)],
-          key=str.lower)
+          key=lambda s: s.lower())
       for filename in filenames:
         yield File(self.model, os.path.join(dirpath, filename), expanded=True)
 
