@@ -38,6 +38,7 @@ class VimManager(delegates.SlaveView):
     self.vim = None
     self.vim_proc = None
     self.vim_pid = None
+    self.vim_running = False    # to prevent accessing vim after close
 
   def on_holder__button_press_event(self, eventbox, event):
     self.grab_focus()
@@ -45,13 +46,16 @@ class VimManager(delegates.SlaveView):
   def connect_vim(self):
     log.debug('Connect')
     self.vim = bus.connect('vim')
+    self.vim_running = True
     self.connect_vim_signals()
 
   def save_session(self):
     self.vim.command('mks! {0}'.format(self.get_vim_session()))
 
   def stop(self):
+    log.debug('Stopping Vim')
     self.grab_focus()
+    self.vim_running = False
     self.vim.quit(**self.null_callback)
 
   def get_vim_env(self):
@@ -130,6 +134,11 @@ class VimManager(delegates.SlaveView):
 
   def get_current_buffer_id(self):
     return self.vim.get_current_buffer_id()
+
+  def get_buffer_modified(self, bufid):
+    if self.vim_running:
+      return self.vim.get_buffer_modified(bufid)
+    return None
 
   def connect_vim_signals(self):
     for k in dir(self):

@@ -32,6 +32,12 @@ class Buffer(lists.ListItem):
     """Display in the buffer list."""
     return (self.basename, self.dispname)
 
+  @property
+  def background(self):
+    if self.model.vim.get_buffer_modified(self.bufid):
+      return '#ffffbb'    # pale yellow
+    return '#ffffff'    # white
+
   def update_dispname(self):
     """Set or reset display name based on path and bookmarks"""
     bookmark = self.model.bookmarks.shortest_path(self.filename)
@@ -41,13 +47,16 @@ class Buffer(lists.ListItem):
     else:
       self.dispname = self.dirname
 
+def background_mapper(cell, obj, renderer):
+  renderer.set_property('background', obj.background)
+
 class BufferManager(lists.ListView):
   """Buffer list."""
 
   LABEL = 'Buffers'
   ICON  = 'page_white_stack.png'
 
-  COLUMNS = [objectlist.Column('markup', use_markup=True),
+  COLUMNS = [objectlist.Column('markup', use_markup=True, mappers=[background_mapper]),
              objectlist.Column('bufid', visible=False),
              objectlist.Column('basename', visible=False, searchable=True)]
 

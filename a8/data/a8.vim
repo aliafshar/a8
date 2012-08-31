@@ -89,6 +89,10 @@ class VimDBUSService(Object):
   def get_buffer_number(self, path):
     return int(vim.eval("bufnr('%s')" % path))
 
+  @method(VIM_NS, in_signature='i', out_signature='b')
+  def get_buffer_modified(self, bufid):
+    return vim.eval('getbufvar(%d, "&mod")' % bufid) == '1'
+
   @method(VIM_NS, in_signature='s')
   def open_buffer(self, path):
     vim.command('b!%s' % self.get_buffer_number(path))
