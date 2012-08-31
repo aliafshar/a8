@@ -183,7 +183,7 @@ class UriContext(BaseContext):
 class IntegerContext(BaseContext):
   """Context for integers."""
 
-  expr = r'[0-9]+'
+  expr = r'\b[0-9]+\b'
   name = 'Integer context'
 
   int_actions = [
