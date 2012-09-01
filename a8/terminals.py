@@ -327,8 +327,26 @@ class TerminalView(delegates.SlaveView, lists.ListItem):
       self.add_context(context)
 
   def add_context(self, context):
-    matchnum = self.terminal.match_add(context.expr)
+    matchnum = self.terminal.match_add(context.ereg_expr)
     self.contexts[matchnum] = context
+
+  def get_selection_text(self):
+    if self.terminal.get_has_selection():
+      # Get the selection value from the primary buffer
+      clipboard = gtk.clipboard_get(gtk.gdk.SELECTION_PRIMARY)
+      selection = clipboard.wait_for_text()
+      return selection
+    return None
+
+  def pos_is_on_text(self, col, row, text):
+    """Test whether the given coordinates match on the given text."""
+    # check for a match by swapping in the selection value as the only match
+    self.terminal.match_clear_all()
+    self.terminal.match_add(re.escape(text))
+    match = self.terminal.match_check(col, row)
+    self.terminal.match_clear_all()
+    self.add_contexts()   # swap original matches back in
+    return match is not None
 
   def on_terminal__child_exited(self, terminal):
     self.pid = None
@@ -345,9 +363,19 @@ class TerminalView(delegates.SlaveView, lists.ListItem):
 
   def on_terminal__button_press_event(self, terminal, event):
     col, row = self.get_position_from_pointer(event.x, event.y)
+    selection_text = self.get_selection_text()
+    # check text selection
+    if selection_text and self.pos_is_on_text(col, row, selection_text):
+      for context_type in contexts.ContextManager.context_order:
+        if re.match(context_type.expr, selection_text):
+          self.on_match(selection_text, context_type, event)
+          return
+    # check regular matches
     match = self.terminal.match_check(col, row)
     if match is not None:
-      self.on_match(match, event)
+      match_string, match_index = match
+      context_type = self.contexts[match_index]
+      self.on_match(match_string, context_type, event)
 
   def get_position_from_pointer(self, x, y):
     """Get the row/column position for a pointer position."""
@@ -355,9 +383,7 @@ class TerminalView(delegates.SlaveView, lists.ListItem):
     ch = self.terminal.get_char_height()
     return int(x / cw), int(y / ch)
 
-  def on_match(self, match, event):
-    match_string, match_index = match
-    context_type = self.contexts[match_index]
+  def on_match(self, match_string, context_type, event):
     context = context_type(self.model, self, match_string)
     log.debug('Matched "{0}" as {1}', match_string, context_type.name)
     if event.button == 3:

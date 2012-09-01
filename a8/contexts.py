@@ -23,6 +23,7 @@ class BaseContext(object):
 
   #: A regular expression to match the context
   expr = None
+  ereg_expr = None
   name = 'Unnamed Context'
 
   def __init__(self, model, view, data):
@@ -46,7 +47,8 @@ class BaseContext(object):
 class LocalContext(BaseContext):
   """Context for files and directories."""
 
-  expr = r'[^[:space:]":\$]+'
+  expr = r'[^\s":\$]+'
+  ereg_expr = r'[^[:space:]":\$]+'
   name = 'Local filesystem context'
 
   dir_actions = [
@@ -168,6 +170,7 @@ class UriContext(BaseContext):
 
   name = 'URI Context'
   expr = r'https{0,1}://\S+'
+  ereg_expr = expr
 
   uri_actions = [
     actions.Action('browse_uri', 'Open', 'world_go.png'),
@@ -184,6 +187,7 @@ class IntegerContext(BaseContext):
   """Context for integers."""
 
   expr = r'\b[0-9]+\b'
+  ereg_expr = expr
   name = 'Integer context'
 
   int_actions = [
