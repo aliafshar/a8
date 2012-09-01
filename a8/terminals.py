@@ -348,6 +348,11 @@ class TerminalView(delegates.SlaveView, lists.ListItem):
     self.add_contexts()   # swap original matches back in
     return match is not None
 
+  def get_contexts_for_text(self, text):
+    for context_type in contexts.ContextManager.context_order:
+      if re.match(context_type.expr, text):
+        yield context_type
+
   def on_terminal__child_exited(self, terminal):
     self.pid = None
     self.terminal.feed('\x1b[0;1;34mExited, status: \x1b[0;1;31m{0}'.format(
@@ -363,19 +368,19 @@ class TerminalView(delegates.SlaveView, lists.ListItem):
 
   def on_terminal__button_press_event(self, terminal, event):
     col, row = self.get_position_from_pointer(event.x, event.y)
-    selection_text = self.get_selection_text()
+    context_types = []
     # check text selection
+    selection_text = self.get_selection_text()
     if selection_text and self.pos_is_on_text(col, row, selection_text):
-      for context_type in contexts.ContextManager.context_order:
-        if re.match(context_type.expr, selection_text):
-          self.on_match(selection_text, context_type, event)
-          return
-    # check regular matches
-    match = self.terminal.match_check(col, row)
-    if match is not None:
-      match_string, match_index = match
-      context_type = self.contexts[match_index]
-      self.on_match(match_string, context_type, event)
+      context_types = list(self.get_contexts_for_text(selection_text))
+      self.on_match(selection_text, context_types, event)
+    else:
+      # check regular matches
+      match = self.terminal.match_check(col, row)
+      if match is not None:
+        match_string, match_index = match
+        context_types = list(self.get_contexts_for_text(match_string))
+        self.on_match(match_string, context_types, event)
 
   def get_position_from_pointer(self, x, y):
     """Get the row/column position for a pointer position."""
@@ -383,19 +388,29 @@ class TerminalView(delegates.SlaveView, lists.ListItem):
     ch = self.terminal.get_char_height()
     return int(x / cw), int(y / ch)
 
-  def on_match(self, match_string, context_type, event):
-    context = context_type(self.model, self, match_string)
-    log.debug('Matched "{0}" as {1}', match_string, context_type.name)
-    if event.button == 3:
-      self.on_match_menu(context, event)
-    elif event.state & gtk.gdk.CONTROL_MASK:
-      self.on_match_default(context, event)
+  def on_match(self, match_string, context_types, event):
+    match_menus = []
+    # get menus for all matching contexts
+    for context_type in context_types:
+      context = context_type(self.model, self, match_string)
+      log.debug('Matched "{0}" as {1}', match_string, context_type.name)
+      if event.button == 3:   # right click
+        context_menu = self.get_match_menu(context, event)
+        if context_menu is not None:
+          match_menus.append(context_menu)
+      elif event.state & gtk.gdk.CONTROL_MASK:
+        self.on_match_default(context, event)
+    if match_menus:
+      match_menu = match_menus[0]
+      # combine other menu items into first menu
+      for other_match_menu in match_menus[1:]:
+        match_menu.append(gtk.SeparatorMenuItem())
+        for menu_item in other_match_menu.get_children():
+          menu_item.reparent(match_menu)
+      match_menu.popup(None, None, None, event.button, event.time)
 
-  def on_match_menu(self, context, event):
-    menu = context.create_menu()
-    if menu is None:
-      return
-    menu.popup(None, None, None, event.button, event.time)
+  def get_match_menu(self, context, event):
+    return context.create_menu()
 
   def on_match_default(self, context, event):
     pass
