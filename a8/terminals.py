@@ -388,10 +388,25 @@ class TerminalView(delegates.SlaveView, lists.ListItem):
     ch = self.terminal.get_char_height()
     return int(x / cw), int(y / ch)
 
+  def eval_quotes(self, text):
+    # double-quoted
+    if re.match(r'".*"', text):
+      return text[1:-1].replace(r'\"', '"')
+    # single-quoted
+    if re.match(r"'.*'", text):
+      return text[1:-1]
+    # check if backslash-escaped
+    if '\\' in text:
+      # make sure all special characters are escaped, otherwise assume literal
+      if not re.search(r'(?<!\\)[ ()]', text):
+        return re.sub(r'\\(.)', r'\1', text)
+    return text
+
   def on_match(self, match_string, context_types, event):
     match_menus = []
     # get menus for all matching contexts
     for context_type in context_types:
+      match_string = self.eval_quotes(match_string)
       context = context_type(self.model, self, match_string)
       log.debug('Matched "{0}" as {1}', match_string, context_type.name)
       if event.button == 3:   # right click

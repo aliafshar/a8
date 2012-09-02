@@ -47,8 +47,12 @@ class BaseContext(object):
 class LocalContext(BaseContext):
   """Context for files and directories."""
 
-  expr = r'[^\s":\$]+'
-  ereg_expr = r'[^[:space:]":\$]+'
+  expr = (
+      r'"([^"]|\\")+"|' + \
+      r"'[^']+'|" + \
+      r'(\\ |\\(|\\)|[^\s"\':\$])+'
+  )
+  ereg_expr = expr.replace(r'\s', '[:space:]')
   name = 'Local filesystem context'
 
   dir_actions = [
