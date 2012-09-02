@@ -179,6 +179,8 @@ class TerminalView(delegates.SlaveView, lists.ListItem):
     #self.create_finder()
 
   def create_tools(self):
+    self.popinout_button = resources.load_button('terminal_pop_out.png',
+      'Pop out terminals')
     self.close_button = resources.load_button('cross.png',
       'Close terminal window')
     self.browse_button = resources.load_button('folder.png',
@@ -197,6 +199,7 @@ class TerminalView(delegates.SlaveView, lists.ListItem):
       'Select None')
     self.find_button = resources.load_button('find.png',
       'Search for text', gtk.ToggleButton)
+    self.tools2.pack_start(self.popinout_button, expand=False)
     self.tools2.pack_start(self.close_button, expand=False)
     self.tools.pack_start(self.browse_button, expand=False)
     self.tools.pack_start(self.shell_button, expand=False)
@@ -448,6 +451,9 @@ class TerminalView(delegates.SlaveView, lists.ListItem):
   def close(self):
     self.model.terminals.remove_tab(self)
 
+  def on_popinout_button__clicked(self, button):
+    self.model.ui.popinout_terminals()
+
   def on_browse_button__clicked(self, button):
     self.model.files.browse(self.cwd)
 
@@ -547,3 +553,11 @@ class TerminalManager(lists.ListView):
     self.book.set_current_page(update)
     self.grab_focus()
 
+  def popped_out(self):
+    return self.model.ui.terminals_popped_out()
+
+  def update_popinout_button(self):
+    in_out = (self.popped_out() and 'in' or 'out')
+    for tab in self.items:
+      tab.popinout_button.set_image(resources.load_icon('terminal_pop_%s.png' % in_out))
+      tab.popinout_button.set_tooltip_text('Pop %s terminals' % in_out)

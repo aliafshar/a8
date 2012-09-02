@@ -49,9 +49,10 @@ class ApplicationWindow(A8Window):
     self.plugins.add_tab(self.model.bookmarks)
     self.plugins.add_tab(self.model.terminals)
     self.vpaned.pack1(self.model.vim.widget, resize=True, shrink=False)
+    self.terminals_window = None
     if self.model.config.get('terminal_window'):
-      w = TerminalWindow(self.model)
-      w.widget.add(self.model.terminals.book)
+      self.terminals_window = TerminalWindow(self.model)
+      self.terminals_window.widget.add(self.model.terminals.book)
     else:
       self.vpaned.pack2(self.model.terminals.book, resize=False, shrink=False)
     self.post_configure()
@@ -77,6 +78,22 @@ class ApplicationWindow(A8Window):
 
   def focus_buffers(self):
     self.models.buffers.items.grab_focus()
+
+  def terminals_popped_out(self):
+    return (self.terminals_window is not None and \
+        self.terminals_window.widget.get_property('visible'))
+
+  def popinout_terminals(self):
+    if self.terminals_popped_out():
+      # pop in
+      self.model.terminals.book.unparent()
+      self.vpaned.pack2(self.model.terminals.book, resize=False, shrink=False)
+      self.terminals_window.hide()
+    else:
+      # pop out
+      self.terminals_window = TerminalWindow(self.model)
+      self.model.terminals.book.reparent(self.terminals_window.widget)
+    self.model.terminals.update_popinout_button()
 
 
 class PluginTabs(delegates.SlaveView):
