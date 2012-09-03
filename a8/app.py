@@ -20,10 +20,8 @@ class Abominade(object):
     self.home = config.InstanceDirectory()
     self.config = self.home.load_config()
     self.parse_args()
-    if len(self.args.files) == 1 and os.path.isdir(self.args.files[0]):
-      # cd into single dir instead of opening in vim
-      os.chdir(self.args.files[0])
-      self.args.files.pop(0)
+    if self.args.directory:
+      os.chdir(self.args.directory)
     self.shortcuts = shortcuts.ShortcutManager(self)
     self.files = files.FileManager(self)
     self.buffers = buffers.BufferManager(self)
@@ -38,6 +36,7 @@ class Abominade(object):
 
   def parse_args(self):
     parser = argparse.ArgumentParser()
+    parser.add_argument('-d', '--directory', help='Working directory to start in.')
     parser.add_argument('files', nargs='*', help='Files to open.')
     parser.add_argument('--no-session', action='store_true')
     parser.add_argument('--show-toolbar', action='store_true')
