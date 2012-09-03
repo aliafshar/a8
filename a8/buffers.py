@@ -62,7 +62,7 @@ class BufferManager(lists.ListView):
 
   def create_ui(self):
     lists.ListView.create_ui(self)
-    if self.model.config.get('toolbar', False):
+    if self.model.config['toolbar']:
       self.stack.pack_start(self.model.shortcuts.create_tools(), expand=False)
     self.filenames = {}
     self.bufids = {}

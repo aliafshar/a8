@@ -40,7 +40,7 @@ class SessionManager(object):
     return session
 
   def start(self):
-    if not self.model.config.get('session', True):
+    if not self.model.config['session']:
       self.model.terminals.execute()
       return
     terminals = self.session.get('terminals', [])

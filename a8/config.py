@@ -18,7 +18,14 @@ class ConfigError(ValueError):
 class Config(object):
   """Configuration object"""
   def __init__(self):
-    self.opts = {}
+    self.opts = {
+      'session': True,    # save a8 session on exit, resume on open
+      'toolbar': False,   # display small a8 toolbar
+      'terminal_window': False,   # move terminal pane to separate window
+    }
+
+  def __getitem__(self, k):
+    return self.opts[k]
 
   def get(self, k, default=None):
     return self.opts.get(k, default)

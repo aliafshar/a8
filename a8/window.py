@@ -50,7 +50,7 @@ class ApplicationWindow(A8Window):
     self.plugins.add_tab(self.model.terminals)
     self.vpaned.pack1(self.model.vim.widget, resize=True, shrink=False)
     self.terminals_window = None
-    if self.model.config.get('terminal_window'):
+    if self.model.config['terminal_window']:
       self.terminals_window = TerminalWindow(self.model)
       self.terminals_window.widget.add(self.model.terminals.book)
     else:

@@ -72,7 +72,7 @@ class VimManager(delegates.SlaveView):
       '--cmd', 'so {script}'.format(script=self.get_vim_script()),
       '--socketid', str(self.xid),
     ]
-    if self.model.config.get('session', True):
+    if self.model.config['session']:
       args.extend(['-S', self.get_vim_session()])
     return args
 
