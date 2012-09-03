@@ -72,13 +72,13 @@ class VimManager(delegates.SlaveView):
       '--cmd', 'so {script}'.format(script=self.get_vim_script()),
       '--socketid', str(self.xid),
     ]
-    if self.model.config['session']:
+    if self.model.sessions.filename is not None:
       args.extend(['-S', self.get_vim_session()])
     return args
 
   def get_vim_session(self):
-    path = self.model.home.path('a8_vim_session.vim')
-    if not os.path.exists(path):
+    path = self.model.sessions.session_path('a8_vim_session.vim')
+    if path and not os.path.exists(path):
       f = open(path, 'w')
       f.close()
     return path

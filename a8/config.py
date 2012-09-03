@@ -19,7 +19,7 @@ class Config(object):
   """Configuration object"""
   def __init__(self):
     self.opts = {
-      'session': True,    # save a8 session on exit, resume on open
+      'session_type': 'user',   # where (or whether) to maintain a8 session
       'toolbar': False,   # display small a8 toolbar
       'terminal_window': False,   # move terminal pane to separate window
     }
@@ -35,6 +35,8 @@ class Config(object):
     if os.path.exists(path):
       with open(path) as f:
         opts = yaml.load(f)
+        if opts.pop('session', None) is False:
+          opts['session_type'] = 'none'
         self.load_from(opts)
 
   def load_from(self, opts):

@@ -38,11 +38,16 @@ class Abominade(object):
     parser = argparse.ArgumentParser()
     parser.add_argument('-d', '--directory', help='Working directory to start in.')
     parser.add_argument('files', nargs='*', help='Files to open.')
-    parser.add_argument('--no-session', action='store_true')
+    parser.add_argument('-s', '--session', action='store',
+        choices=('user', 'local', 'none'),
+        default=None,
+        help='Maintain session per-user, per-working-dir, or no session.')
+    parser.add_argument('--no-session', action='store_const', dest='session',
+        const='none', help='Alias for --session=none.')
     parser.add_argument('--show-toolbar', action='store_true')
     self.args = parser.parse_args()
-    if self.args.no_session:
-      self.config.opts['session'] = False
+    if self.args.session is not None:
+      self.config.opts['session_type'] = self.args.session
     if self.args.show_toolbar:
       self.config.opts['toolbar'] = True
 

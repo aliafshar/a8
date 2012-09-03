@@ -14,10 +14,25 @@ class SessionManager(object):
 
   def __init__(self, model):
     self.model = model
-    self.filename = self.model.home.path('session.yaml')
+    self.filename = self.session_path('session.yaml')
+    if self.filename:
+      session_path = os.path.dirname(self.filename)
+      log.info('Using session path %s' % session_path)
+      if not os.path.exists(session_path):
+        os.mkdir(session_path)
+    else:
+      log.info('Session disabled')
     self.session = self.load()
     if self.session is None:
       self.session = {'terminals': []}
+
+  def session_path(self, filename):
+    session_type = self.model.config['session_type']
+    if session_type == 'local':
+      return os.path.join(os.getcwd(), '.a8', filename)
+    elif session_type == 'user':
+      return self.model.home.path(filename)
+    return None
 
   def save_session(self):
     self.session['terminals'] = [t.cwd for t in self.model.terminals.items]
@@ -26,7 +41,7 @@ class SessionManager(object):
     return True
 
   def load(self):
-    if not os.path.exists(self.filename):
+    if not self.filename or not os.path.exists(self.filename):
       return
     with open(self.filename) as f:
       data = f.read()
@@ -40,7 +55,7 @@ class SessionManager(object):
     return session
 
   def start(self):
-    if not self.model.config['session']:
+    if self.filename is None:
       self.model.terminals.execute()
       return
     terminals = self.session.get('terminals', [])
@@ -52,8 +67,9 @@ class SessionManager(object):
     gobject.timeout_add(5000, self.save_session)
 
   def save(self):
-    data = yaml.dump(self.session, default_flow_style=False)
-    with open(self.filename, 'w') as f:
-      f.write(data)
+    if self.filename is not None:
+      data = yaml.dump(self.session, default_flow_style=False)
+      with open(self.filename, 'w') as f:
+        f.write(data)
 
 
