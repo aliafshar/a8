@@ -50,7 +50,9 @@ class VimManager(delegates.SlaveView):
     self.connect_vim_signals()
 
   def save_session(self):
-    self.vim.command('mks! {0}'.format(self.get_vim_session()))
+    vim_session = self.get_vim_session()
+    if vim_session is not None:
+      self.vim.command('mks! {0}'.format(self.get_vim_session()))
 
   def stop(self):
     log.debug('Stopping Vim')
