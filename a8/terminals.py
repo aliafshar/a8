@@ -150,6 +150,10 @@ class TerminalView(delegates.SlaveView, lists.ListItem):
       os.path.dirname(self.cwd)
     )
 
+  def __init__(self, *args, **kw):
+    super(TerminalView, self).__init__(*args, **kw)
+    self.prompt_lines = set()
+
   def create_ui(self):
     self.widget.set_data('delegate', self)
     self.pid = None
@@ -385,6 +389,34 @@ class TerminalView(delegates.SlaveView, lists.ListItem):
         match_string, match_index = match
         contexts = list(self.get_contexts_for_text(match_string))
         self.on_match(match_string, contexts, event)
+
+  def on_terminal__key_press_event(self, terminal, event):
+    terminal_adj = terminal.get_adjustment()
+    # Shift + Up
+    if event.state & gtk.gdk.SHIFT_MASK and event.keyval == gtk.keysyms.Up:
+      # scroll up to previous prompt (or location of previous Return keypress)
+      input_lines_above = [x for x in sorted(self.prompt_lines, reverse=True) if
+          x < terminal_adj.value and x >= terminal_adj.get_lower()]
+      if len(input_lines_above):
+        terminal_adj.value = input_lines_above[0]
+      return True   # don't propagate (just writes garbage character)
+    # Shift + Down
+    if event.state & gtk.gdk.SHIFT_MASK and event.keyval == gtk.keysyms.Down:
+      # scroll down to next prompt (or location of next Return keypress)
+      input_lines_below = [x for x in sorted(self.prompt_lines) if x > terminal_adj.value]
+      if len(input_lines_below):
+        terminal_adj.value = input_lines_below[0]
+      else:
+        col, row = terminal.get_cursor_position()
+        terminal_adj.value = row
+      return True   # don't propagate (just writes garbage character)
+    # Return
+    if event.keyval == gtk.keysyms.Return:
+      # record Return keypress as prompt line
+      col, row = terminal.get_cursor_position()
+      if row not in self.prompt_lines:
+        self.prompt_lines.add(row)
+      return False    # propagate
 
   def get_position_from_pointer(self, x, y):
     """Get the row/column position for a pointer position."""
