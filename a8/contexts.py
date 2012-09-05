@@ -7,6 +7,7 @@
 
 
 import os
+import re
 import gtk
 import psutil
 import logbook
@@ -22,7 +23,6 @@ class BaseContext(object):
   """Base context superclass."""
 
   #: A regular expression to match the context
-  expr = None
   ereg_expr = None
   name = 'Unnamed Context'
 
@@ -30,6 +30,14 @@ class BaseContext(object):
     self.model = model
     self.data = data
     self.view = view
+
+  def check_valid(self):
+    """Determine whether context data actually represents actionable item.
+
+    Note that this may be orthogonal to checking against the associated regex,
+    which is only a heuristic, and may match things that are not actionable, or
+    may miss things that are."""
+    raise NotImplementedError()
 
   def create_action_menu(self, acts):
     """Create a menu for the context."""
@@ -47,12 +55,11 @@ class BaseContext(object):
 class LocalContext(BaseContext):
   """Context for files and directories."""
 
-  expr = (
+  ereg_expr = (
       r'"([^"]|\\")+"|' + \
       r"'[^']+'|" + \
-      r'(\\ |\\(|\\)|[^\s"\':\$])+'
+      r'(\\ |\\\(|\\\)|\\=|[^]\[[:space:]"\':\$()=])+'
   )
-  ereg_expr = expr.replace(r'\s', '[:space:]')
   name = 'Local filesystem context'
 
   dir_actions = [
@@ -112,28 +119,63 @@ class LocalContext(BaseContext):
     )
   ]
 
+  def __init__(self, model, view, data):
+    super(LocalContext, self).__init__(model, view, data)
+    raw_data = data
+    # check literal, without interpreting quotes or backslash sequences
+    self.data = self._expand_path(self.data)
+    if self.check_valid():
+      return
+    eval_data = self._eval_quotes(raw_data)
+    # check after interpreting quotes and backslash sequences
+    if eval_data != raw_data:
+      self.data = self._expand_path(self.data)
+      if self.check_valid():
+        return
+    # check for 'a/FOO' and 'b/FOO' formats commonly used in diffs
+    # unescaped (e.g. from 'hg diff')
+    if raw_data.startswith('a/') or raw_data.startswith('b/'):
+      self.data = self._expand_path(raw_data[2:])
+      if self.check_valid():
+        return
+    # escaped (e.g. from 'git diff')
+    if eval_data != raw_data:
+      if eval_data.startswith('a/') or eval_data.startswith('b/'):
+        self.data = self._expand_path(eval_data[2:])
+
+  def check_valid(self):
+    return os.path.exists(self.data)
+
+  def _eval_quotes(self, text):
+    # double-quoted
+    if re.match(r'".*"$', text):
+      return re.sub(r'\\(["\\])', r'\1', text[1:-1])
+    # single-quoted
+    if re.match(r"'.*'$", text):
+      return text[1:-1]
+    # check if backslash-escaped
+    if '\\' in text:
+      # make sure all special characters are escaped, otherwise assume literal
+      if not re.search(r'(?<!\\)[ ()\[\]=]', text):
+        return re.sub(r'\\(.)', r'\1', text)
+    return text
+
+  def _expand_path(self, path):
+    expanded = os.path.expanduser(path)
+    if not os.path.isabs(expanded) and self.view is not None:
+      log.debug('relative to "{0}"', self.view.cwd)
+      expanded = os.path.join(self.view.cwd, expanded)
+    return expanded
+
   def create_menu(self):
     """Create a menu for the context."""
-    raw_data = self.data
-    menu = self._create_menu()
-    if menu is None:
-      # check for 'a/FOO' and 'b/FOO' formats commonly used in diffs
-      if raw_data.startswith('a/') or raw_data.startswith('b/'):
-        self.data = raw_data[2:]
-        menu = self._create_menu()
-    return menu
-
-  def _create_menu(self):
-    self.data = os.path.expanduser(self.data)
-    if not os.path.isabs(self.data) and self.view is not None:
-      log.debug('relative to "{0}"', self.view.cwd)
-      self.data = os.path.join(self.view.cwd, self.data)
     if os.path.isdir(self.data):
       log.debug('directory')
       return self.create_dir_menu()
     elif os.path.exists(self.data):
       log.debug('file')
       return self.create_file_menu()
+    return None
 
   def create_dir_menu(self):
     return self.create_action_menu(self.dir_actions)
@@ -180,6 +222,11 @@ class UriContext(BaseContext):
     actions.Action('browse_uri', 'Open', 'world_go.png'),
   ]
 
+  def check_valid(self):
+    # TODO(dbarnett): more sophisticated checks using urlparse
+    m = re.match(self.expr + '$', self.data)
+    return m is not None
+
   def on_browse_uri_activate(self):
     webbrowser.open_new_tab(self.data)
 
@@ -190,14 +237,21 @@ class UriContext(BaseContext):
 class IntegerContext(BaseContext):
   """Context for integers."""
 
-  expr = r'\b[0-9]+\b'
-  ereg_expr = expr
+  ereg_expr = r'\b[0-9]+\b'
   name = 'Integer context'
 
   int_actions = [
     actions.Action('term', 'SIGTERM', 'asterisk_yellow.png'),
     actions.Action('kill', 'SIGKILL', 'asterisk_orange.png'),
   ]
+
+  def check_valid(self):
+    try:
+      pid = int(self.data)
+      proc = psutil.Process(pid)
+    except (ValueError, psutil.NoSuchProcess):
+      return False
+    return True
 
   def create_menu(self):
     try:

@@ -353,8 +353,9 @@ class TerminalView(delegates.SlaveView, lists.ListItem):
 
   def get_contexts_for_text(self, text):
     for context_type in contexts.ContextManager.context_order:
-      if re.match(context_type.expr, text):
-        yield context_type
+      context = context_type(self.model, self, text)
+      if context.check_valid():
+        yield context
 
   def on_terminal__child_exited(self, terminal):
     self.pid = None
@@ -371,19 +372,19 @@ class TerminalView(delegates.SlaveView, lists.ListItem):
 
   def on_terminal__button_press_event(self, terminal, event):
     col, row = self.get_position_from_pointer(event.x, event.y)
-    context_types = []
+    contexts = []
     # check text selection
     selection_text = self.get_selection_text()
     if selection_text and self.pos_is_on_text(col, row, selection_text):
-      context_types = list(self.get_contexts_for_text(selection_text))
-      self.on_match(selection_text, context_types, event)
+      contexts = list(self.get_contexts_for_text(selection_text))
+      self.on_match(selection_text, contexts, event)
     else:
       # check regular matches
       match = self.terminal.match_check(col, row)
       if match is not None:
         match_string, match_index = match
-        context_types = list(self.get_contexts_for_text(match_string))
-        self.on_match(match_string, context_types, event)
+        contexts = list(self.get_contexts_for_text(match_string))
+        self.on_match(match_string, contexts, event)
 
   def get_position_from_pointer(self, x, y):
     """Get the row/column position for a pointer position."""
@@ -391,27 +392,11 @@ class TerminalView(delegates.SlaveView, lists.ListItem):
     ch = self.terminal.get_char_height()
     return int(x / cw), int(y / ch)
 
-  def eval_quotes(self, text):
-    # double-quoted
-    if re.match(r'".*"', text):
-      return text[1:-1].replace(r'\"', '"')
-    # single-quoted
-    if re.match(r"'.*'", text):
-      return text[1:-1]
-    # check if backslash-escaped
-    if '\\' in text:
-      # make sure all special characters are escaped, otherwise assume literal
-      if not re.search(r'(?<!\\)[ ()]', text):
-        return re.sub(r'\\(.)', r'\1', text)
-    return text
-
-  def on_match(self, match_string, context_types, event):
+  def on_match(self, match_string, contexts, event):
     match_menus = []
     # get menus for all matching contexts
-    for context_type in context_types:
-      match_string = self.eval_quotes(match_string)
-      context = context_type(self.model, self, match_string)
-      log.debug('Matched "{0}" as {1}', match_string, context_type.name)
+    for context in contexts:
+      log.debug('Matched "{0}" as {1}', context.data, context.name)
       if event.button == 3:   # right click
         context_menu = self.get_match_menu(context, event)
         if context_menu is not None:
