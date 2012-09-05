@@ -68,7 +68,7 @@ class VimDBUSService(Object):
 
   @method(VIM_NS, in_signature='s')
   def open_file(self, path):
-    path = path.replace(' ', r'\ ')
+    path = path.replace(' ', r'\ ').replace('"', r'\"')
     vim.command('silent confirm e %s' % path)
 
   @method(VIM_NS, in_signature='as')
@@ -107,7 +107,7 @@ class VimDBUSService(Object):
 
   @method(VIM_NS, in_signature='s')
   def save_as_current_buffer(self, path):
-    path = path.replace(' ', r'\ ')
+    path = path.replace(' ', r'\ ').replace('"', r'\"')
     vim.command('saveas! %s' % path)
 
   @method(VIM_NS, in_signature='s')
@@ -254,7 +254,7 @@ class VimDBUSService(Object):
 
   @method(VIM_NS, in_signature='s')
   def cd(self, path):
-    path = path.replace(' ', r'\ ')
+    path = path.replace(' ', r'\ ').replace('"', r'\"')
     vim.command('cd %s' % path)
 
   @method(VIM_NS, in_signature='i')
