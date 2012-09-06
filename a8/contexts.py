@@ -129,7 +129,7 @@ class LocalContext(BaseContext):
     eval_data = self._eval_quotes(raw_data)
     # check after interpreting quotes and backslash sequences
     if eval_data != raw_data:
-      self.data = self._expand_path(self.data)
+      self.data = self._expand_path(eval_data)
       if self.check_valid():
         return
     # check for 'a/FOO' and 'b/FOO' formats commonly used in diffs
