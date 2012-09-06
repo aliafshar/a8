@@ -75,8 +75,8 @@ class BufferManager(lists.ListView):
     if (self.items.get_selection() is None or
         not self.items.selected_item or
         self.items.selected_item.filename != filename):
-      b = self.items.selected_item = self.filenames[filename]
-      self.model.ui.set_title('{0}/{1}'.format(b.dispname, b.basename))
+      self.items.selected_item = self.filenames[filename]
+    self.refresh_activated_item()
 
   def remove(self, filename):
     if filename in self.filenames:
@@ -84,8 +84,7 @@ class BufferManager(lists.ListView):
       self.items.remove(buf)
       if buf.bufid in self.bufids:
         del self.bufids[buf.bufid]
-      if len(self.items) == 0:  # removed last item
-        self.model.ui.set_title('')
+      self.refresh_activated_item()
 
   def refresh(self):
     for item in self.items:
@@ -96,8 +95,17 @@ class BufferManager(lists.ListView):
     item = self.bufids.get(bufid)
     return item
 
+  def refresh_activated_item(self):
+    b = self.get_activated_item()
+    if b is not None:
+      title = '{0}/{1}'.format(b.dispname, b.basename)
+    else:
+      title = ''
+    self.model.ui.set_title(title)
+
   def on_items__item_activated(self, items, item):
     self.model.vim.open_file(item.filename)
+    self.refresh_activated_item()
     self.model.vim.grab_focus()
 
   def on_items__item_right_clicked(self, items, item, event):
