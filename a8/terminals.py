@@ -37,6 +37,13 @@ class TerminalWindow(window.A8Window):
     super(TerminalWindow, self).post_configure()
     self.set_title('Terminals')
 
+  def on_widget__delete_event(self, window, event):
+    # emulate closing by closing all terminals and hiding, but don't destroy
+    # widgets so we don't have to manage re-creating them and setting up state
+    for terminal in self.model.terminals.items:
+      terminal.close()
+    self.hide()
+    return True
 
 class TerminalConfiguration(object):
   """Configures a terminal."""
@@ -548,6 +555,10 @@ class TerminalManager(lists.ListView):
     self.book.show_all()
     self.book.set_current_page(self.book.page_num(delegate.widget))
     self.items.append(delegate)
+    if self.popped_out:
+      self.terminals_window.show()
+      # unminimize and bring to front
+      self.terminals_window.widget.window.show()
 
   def remove_tab(self, delegate):
     self.book.remove_page(self.book.page_num(delegate.widget))
