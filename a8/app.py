@@ -59,7 +59,7 @@ class Abominade(object):
 
   def stop(self):
     """Stop a8"""
-    self.sessions.save_session()
+    self.sessions.save_session(polite=False)
     self.vim.stop()
 
   def emit(self, signal, **kw):

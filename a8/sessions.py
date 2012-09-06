@@ -34,9 +34,13 @@ class SessionManager(object):
       return self.model.home.path(filename)
     return None
 
-  def save_session(self):
+  def save_session(self, polite=False):
+    """Save abominade and vim sessions if sessions enabled.
+
+    If polite=True and vim is in certain interactive modes, skip saving vim
+    session to avoid causing mode glitches."""
     self.session['terminals'] = [t.cwd for t in self.model.terminals.items]
-    self.model.vim.save_session()
+    self.model.vim.save_session(polite=polite)
     self.save()
     return True
 
@@ -64,7 +68,7 @@ class SessionManager(object):
         self.model.terminals.execute(cwd=cwd)
     else:
       self.model.terminals.execute()
-    gobject.timeout_add(5000, self.save_session)
+    gobject.timeout_add(5000, self.save_session, True)
 
   def save(self):
     if self.filename is not None:

@@ -49,10 +49,21 @@ class VimManager(delegates.SlaveView):
     self.vim_running = True
     self.connect_vim_signals()
 
-  def save_session(self):
+  def save_session(self, polite=False):
+    """Save vim session if sessions enabled.
+
+    If polite=True and vim is in certain interactive modes, don't save session
+    so we don't blank out certain vim output (see
+    http://code.google.com/p/abominade/issues/detail?id=18)."""
     vim_session = self.get_vim_session()
-    if vim_session is not None:
-      self.vim.command('mks! {0}'.format(self.get_vim_session()))
+    if vim_session is None:
+      return
+    if polite:
+      cur_vim_mode = self.vim.eval('mode("full")')
+      # Don't save from Hit-enter mode or Command-line mode
+      if cur_vim_mode in ('r', 'c'):
+        return
+    self.vim.command('mks! {0}'.format(self.get_vim_session()))
 
   def stop(self):
     log.debug('Stopping Vim')
