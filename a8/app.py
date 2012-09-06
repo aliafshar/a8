@@ -30,6 +30,9 @@ class Abominade(object):
     self.vim = vimembed.VimManager(self)
     self.ui = window.ApplicationWindow(self)
     self.ui.widget.maximize()
+    # do this after show so the window appears after abominade in launcher
+    if self.config['terminal_window']:
+      self.terminals.popinout()
     self.sessions = sessions.SessionManager(self)
     self.sessions.start()
     extensions.load_extensions(self)

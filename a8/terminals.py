@@ -12,7 +12,7 @@ import psutil, psutil.error
 from pygtkhelpers import delegates
 from pygtkhelpers.ui import dialogs
 
-from a8 import resources, lists, contexts
+from a8 import resources, lists, contexts, window
 
 
 log = logbook.Logger('Terminal')
@@ -26,6 +26,16 @@ def get_default_shell():
 
 class Unset(object):
   """Indicates an unset, i.e. default, option."""
+
+
+class TerminalWindow(window.A8Window):
+
+  def create_ui(self):
+    self.post_configure()
+
+  def post_configure(self):
+    super(TerminalWindow, self).post_configure()
+    self.set_title('Terminals')
 
 
 class TerminalConfiguration(object):
@@ -185,6 +195,7 @@ class TerminalView(delegates.SlaveView, lists.ListItem):
   def create_tools(self):
     self.popinout_button = resources.load_button('terminal_pop_out.png',
       'Pop out terminals')
+    self.update_popinout_button()
     self.close_button = resources.load_button('cross.png',
       'Close terminal window')
     self.browse_button = resources.load_button('folder.png',
@@ -337,6 +348,11 @@ class TerminalView(delegates.SlaveView, lists.ListItem):
     matchnum = self.terminal.match_add(context.ereg_expr)
     self.contexts[matchnum] = context
 
+  def update_popinout_button(self):
+    in_out = (self.model.terminals.popped_out and 'in' or 'out')
+    self.popinout_button.set_image(resources.load_icon('terminal_pop_%s.png' % in_out))
+    self.popinout_button.set_tooltip_text('Pop %s terminals' % in_out)
+
   def get_selection_text(self):
     if self.terminal.get_has_selection():
       # Get the selection value from the primary buffer
@@ -469,7 +485,7 @@ class TerminalView(delegates.SlaveView, lists.ListItem):
     self.model.terminals.remove_tab(self)
 
   def on_popinout_button__clicked(self, button):
-    self.model.ui.popinout_terminals()
+    self.model.terminals.popinout()
 
   def on_browse_button__clicked(self, button):
     self.model.files.browse(self.cwd)
@@ -515,6 +531,11 @@ class TerminalManager(lists.ListView):
   """Tabs containing terminals."""
 
   LABEL = 'Terminals'
+
+  def __init__(self, model):
+    super(TerminalManager, self).__init__(model)
+    self.terminals_window = None
+    self.popped_out = False
 
   def create_ui(self):
     lists.ListView.create_ui(self)
@@ -570,11 +591,22 @@ class TerminalManager(lists.ListView):
     self.book.set_current_page(update)
     self.grab_focus()
 
-  def popped_out(self):
-    return self.model.ui.terminals_popped_out()
+  def popinout(self):
+    if self.popped_out:
+      # pop in
+      self.terminals_window.widget.remove(self.book)
+      self.model.ui.vpaned.pack2(self.book, resize=False, shrink=False)
+      self.terminals_window.hide()
+      self.popped_out = False
+    else:
+      # pop out
+      if self.terminals_window is None:
+        self.terminals_window = TerminalWindow(self.model)
+      self.book.reparent(self.terminals_window.widget)
+      self.terminals_window.show()
+      self.popped_out = True
+    self.update_popinout_button()
 
   def update_popinout_button(self):
-    in_out = (self.popped_out() and 'in' or 'out')
     for tab in self.items:
-      tab.popinout_button.set_image(resources.load_icon('terminal_pop_%s.png' % in_out))
-      tab.popinout_button.set_tooltip_text('Pop %s terminals' % in_out)
+      tab.update_popinout_button()

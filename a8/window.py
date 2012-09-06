@@ -7,13 +7,14 @@ import gtk
 
 from pygtkhelpers import delegates, utils
 
-from a8 import shortcuts, resources, version
+from a8 import resources
 
 
 gtk.window_set_default_icon(resources.load_icon('a8.png').get_pixbuf())
 
 
 class A8Window(delegates.WindowView):
+  """Abominade window object"""
 
   def post_configure(self):
     self.widget.set_title('Abominade loves you.')
@@ -23,11 +24,8 @@ class A8Window(delegates.WindowView):
     self.widget.set_default_size(800, 600)
     self.widget.show_all()
 
-
-class TerminalWindow(A8Window):
-
-  def create_ui(self):
-    self.post_configure()
+  def set_title(self, title):
+    self.widget.set_title(u'a8♥u {0}'.format(title))
 
 
 class ApplicationWindow(A8Window):
@@ -49,12 +47,7 @@ class ApplicationWindow(A8Window):
     self.plugins.add_tab(self.model.bookmarks)
     self.plugins.add_tab(self.model.terminals)
     self.vpaned.pack1(self.model.vim.widget, resize=True, shrink=False)
-    self.terminals_window = None
-    if self.model.config['terminal_window']:
-      self.terminals_window = TerminalWindow(self.model)
-      self.terminals_window.widget.add(self.model.terminals.book)
-    else:
-      self.vpaned.pack2(self.model.terminals.book, resize=False, shrink=False)
+    self.vpaned.pack2(self.model.terminals.book, resize=False, shrink=False)
     self.post_configure()
 
   def on_widget__delete_event(self, window, event):
@@ -63,9 +56,6 @@ class ApplicationWindow(A8Window):
 
   def start(self):
     self.show_and_run()
-
-  def set_title(self, filename):
-    self.widget.set_title(u'a8♥u {0}'.format(filename))
 
   def focus_files(self):
     self.plugins.focus_delegate(self.model.files)
@@ -78,22 +68,6 @@ class ApplicationWindow(A8Window):
 
   def focus_buffers(self):
     self.models.buffers.items.grab_focus()
-
-  def terminals_popped_out(self):
-    return (self.terminals_window is not None and \
-        self.terminals_window.widget.get_property('visible'))
-
-  def popinout_terminals(self):
-    if self.terminals_popped_out():
-      # pop in
-      self.model.terminals.book.unparent()
-      self.vpaned.pack2(self.model.terminals.book, resize=False, shrink=False)
-      self.terminals_window.hide()
-    else:
-      # pop out
-      self.terminals_window = TerminalWindow(self.model)
-      self.model.terminals.book.reparent(self.terminals_window.widget)
-    self.model.terminals.update_popinout_button()
 
 
 class PluginTabs(delegates.SlaveView):
