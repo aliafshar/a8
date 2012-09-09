@@ -321,6 +321,10 @@ class VimDBUSService(Object):
   def BufWritePost(self, bufid, filename):
     pass
 
+  @signal(VIM_NS, signature='ss')
+  def BufFilePost(self, bufid, filename):
+    pass
+
   @signal(VIM_NS)
   def BufReadPre(self, bufid):
     pass
@@ -388,6 +392,7 @@ silent au VimCommsDBus BufReadPre * silent call VimSignal('BufReadPre', expand('
 silent au VimCommsDBus BufReadPost * silent call VimSignal('BufReadPost', expand('<abuf>'))
 silent au VimCommsDBus BufWritePre * silent call VimSignal('BufWritePre', expand('<abuf>'))
 silent au VimCommsDBus BufWritePost * silent call VimSignal('BufWritePost', expand('<abuf>'), expand('<amatch>'))
+silent au VimCommsDBus BufFilePost * silent call VimSignal('BufFilePost', expand('<abuf>'), expand('<amatch>'))
 silent au VimCommsDBus BufAdd * silent call VimSignal('BufAdd', expand('<abuf>'), expand('<amatch>'))
 silent au VimCommsDBus BufDelete * silent call VimSignal('BufDelete', expand('<abuf>'), expand('<amatch>'))
 silent au VimCommsDBus BufUnload * silent call VimSignal('BufUnload', expand('<abuf>'))

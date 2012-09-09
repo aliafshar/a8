@@ -203,4 +203,13 @@ class VimManager(delegates.SlaveView):
   def onvim_BufWritePost(self, bufid, filename):
     self.model.emit('file-saved', filename=filename)
 
+  def onvim_BufFilePost(self, bufid, filename):
+    log.debug('Signal: BufFilePost {0} {1}', bufid, filename)
+    bufid = int(bufid)
+    path = unicode(filename)
+    if path:
+      path = os.path.abspath(path)
+    buf = self.model.buffers.bufids.get(bufid)
+    if buf:
+      buf.rename(path)
 

@@ -47,6 +47,11 @@ class Buffer(lists.ListItem):
     else:
       self.dispname = self.dirname
 
+  def rename(self, filename):
+    self.model.buffers.remove(self.filename)
+    self.filename = filename
+    self.model.buffers.append(self.filename, self.bufid)
+
 def background_mapper(cell, obj, renderer):
   renderer.set_property('background', obj.background)
 
