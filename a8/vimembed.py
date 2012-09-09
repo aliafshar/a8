@@ -30,7 +30,8 @@ class VimManager(delegates.SlaveView):
     self.holder = gtk.EventBox()
     self.holder.add_events(gtk.gdk.KEY_PRESS_MASK)
     self.widget.add(self.holder)
-    self.widget.set_size_request(200, 200)
+    # NOTE: Setting a size request on self.widget prevents vim from propagating
+    #       its own size requests up when gvim adds UI elements and resizes
     self.socket = gtk.Socket()
     self.holder.add(self.socket)
     self.widget.show_all()
