@@ -17,6 +17,7 @@ upload: clean MANIFEST.in
 
 clean:
 	rm -rf a8.egg-info build dist MANIFEST.in test-ve
+	find . -name "*.pyc" | xargs rm -f
 
 define MANIFEST_BODY
 include a8/*.py
