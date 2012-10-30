@@ -130,3 +130,6 @@ class BufferManager(lists.ListView):
     if menu is not None:
       menu.popup(None, None, None, event.button, event.time)
 
+  def on_items__item_middle_clicked(self, items, item, event):
+    self.model.vim.close(item.filename)
+
