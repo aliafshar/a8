@@ -127,7 +127,8 @@ class VimManager(delegates.SlaveView):
 
   def close(self, filename):
     self.grab_focus()
-    self.vim.close_buffer(filename, **self.null_callback)
+    bufid = self.model.buffers.filenames[filename].bufid
+    self.vim.close_buffer_id(bufid, **self.null_callback)
 
   def close_all(self):
     self.grab_focus()
