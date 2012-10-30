@@ -127,7 +127,7 @@ class VimManager(delegates.SlaveView):
 
   def close(self, filename):
     self.grab_focus()
-    bufid = self.model.buffers.filenames[filename].bufid
+    bufid = self.model.buffers.get_by_filename(filename).bufid
     self.vim.close_buffer_id(bufid, **self.null_callback)
 
   def close_all(self):
@@ -190,11 +190,8 @@ class VimManager(delegates.SlaveView):
     log.debug('New {0}', bufid)
 
   def onvim_BufDelete(self, bufid, filename):
-    path = unicode(filename)
-    if not path:
-      return
-    path = os.path.realpath(path)
-    self.model.buffers.remove(path)
+    bufid = int(bufid)
+    self.model.buffers.remove(bufid)
     self.model.emit('file-closed', filename=filename)
 
   def onvim_VimLeave(self):
@@ -210,7 +207,7 @@ class VimManager(delegates.SlaveView):
     path = unicode(filename)
     if path:
       path = os.path.abspath(path)
-    buf = self.model.buffers.bufids.get(bufid)
+    buf = self.model.buffers.get_by_bufid(bufid)
     if buf:
       buf.rename(path)
 

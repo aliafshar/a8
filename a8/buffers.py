@@ -8,10 +8,9 @@
 
 import os
 
-import gtk, gtk.gdk
 from pygtkhelpers.ui import objectlist
 
-from a8 import resources, lists, contexts
+from a8 import lists, contexts
 
 
 class Buffer(lists.ListItem):
@@ -65,30 +64,40 @@ class BufferManager(lists.ListView):
              objectlist.Column('bufid', visible=False),
              objectlist.Column('basename', visible=False, searchable=True)]
 
+  def get_by_bufid(self, bufid):
+    for buf in self.items:
+      if buf.bufid == bufid:
+        return buf
+    return None
+
+  def get_by_filename(self, filename):
+    for buf in self.items:
+      if buf.filename == filename:
+        return buf
+    return None
+
   def create_ui(self):
     lists.ListView.create_ui(self)
     if self.model.config['toolbar']:
       self.stack.pack_start(self.model.shortcuts.create_tools(), expand=False)
-    self.filenames = {}
-    self.bufids = {}
 
   def append(self, filename, bufid):
-    if filename not in self.filenames:
-      self.filenames[filename] = buf = Buffer(self.model, filename, bufid)
-      self.bufids[bufid] = buf
+    buf = self.get_by_bufid(bufid)
+    if buf is None:
+      buf = Buffer(self.model, filename, bufid)
       self.items.append(buf)
+    else:
+      buf.filename = filename
     if (self.items.get_selection() is None or
         not self.items.selected_item or
         self.items.selected_item.filename != filename):
-      self.items.selected_item = self.filenames[filename]
+      self.items.selected_item = buf
     self.refresh_activated_item()
 
-  def remove(self, filename):
-    if filename in self.filenames:
-      buf = self.filenames.pop(filename)
+  def remove(self, bufid):
+    buf = self.get_by_bufid(bufid)
+    if buf is not None:
       self.items.remove(buf)
-      if buf.bufid in self.bufids:
-        del self.bufids[buf.bufid]
       self.refresh_activated_item()
 
   def refresh(self):
@@ -97,7 +106,7 @@ class BufferManager(lists.ListView):
 
   def get_activated_item(self):
     bufid = self.model.vim.get_current_buffer_id()
-    item = self.bufids.get(bufid)
+    item = self.get_by_bufid(bufid)
     return item
 
   def refresh_activated_item(self):

@@ -8,7 +8,6 @@
 
 import os
 import re
-import gtk
 import psutil
 import logbook
 import webbrowser
@@ -182,7 +181,7 @@ class LocalContext(BaseContext):
 
   def create_file_menu(self):
     actions = list(self.file_actions)
-    if self.data in self.model.buffers.filenames:
+    if self.model.buffers.get_by_filename(self.data):
       actions.extend(self.open_file_actions)
     return self.create_action_menu(actions)
 
