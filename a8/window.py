@@ -48,6 +48,9 @@ class ApplicationWindow(A8Window):
     self.plugins.add_tab(self.model.terminals)
     self.vpaned.pack1(self.model.vim.widget, resize=True, shrink=False)
     self.vpaned.pack2(self.model.terminals.book, resize=False, shrink=False)
+    # make sure buffers list isn't zero-height
+    if self.plugins.stack.get_position() < 200:
+      self.plugins.stack.set_position(200)
     self.post_configure()
 
   def on_widget__delete_event(self, window, event):
