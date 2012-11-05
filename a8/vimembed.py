@@ -62,7 +62,7 @@ class VimManager(delegates.SlaveView):
     if polite:
       cur_vim_mode = self.vim.eval('mode("full")')
       # Don't save from Hit-enter mode or Command-line mode
-      if cur_vim_mode in ('r', 'c'):
+      if cur_vim_mode in ('r', 'rm', 'c'):
         return
     self.vim.command('mks! {0}'.format(self.get_vim_session()))
 
