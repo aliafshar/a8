@@ -10,7 +10,6 @@ import logbook
 import gtk, gobject, gtk.gdk, pango, vte
 import psutil, psutil.error
 from pygtkhelpers import delegates
-from pygtkhelpers.ui import dialogs
 
 from a8 import resources, lists, contexts, window
 
@@ -548,6 +547,11 @@ class TerminalManager(lists.ListView):
     lists.ListView.create_ui(self)
     self.book = gtk.Notebook()
     self.book.set_tab_pos(gtk.POS_BOTTOM)
+
+  def stop(self):
+    for item in self.items:
+      # close terminals cleanly (see issue 22)
+      os.close(item.terminal.get_pty())
 
   def add_tab(self, delegate):
     self.book.append_page(delegate.widget, delegate.create_tab_widget())

@@ -64,6 +64,7 @@ class Abominade(object):
     """Stop a8"""
     self.sessions.save_session(polite=False)
     self.vim.stop()
+    self.terminals.stop()
 
   def emit(self, signal, **kw):
     for callback in self.signals[signal]:
