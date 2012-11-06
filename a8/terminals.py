@@ -551,7 +551,10 @@ class TerminalManager(lists.ListView):
   def stop(self):
     for item in self.items:
       # close terminals cleanly (see issue 22)
-      os.close(item.terminal.get_pty())
+      try:
+        os.close(item.terminal.get_pty())
+      except OSError:
+        pass
 
   def add_tab(self, delegate):
     self.book.append_page(delegate.widget, delegate.create_tab_widget())
