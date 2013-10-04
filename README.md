@@ -10,6 +10,9 @@ The One True IDE™, successor to the [http://pida.co.uk/ PIDA IDE]. An ultra-li
 * [Configuration](#configuration)
 * [Keyboard Shortcuts](#keyboard-shortcuts)
 * [Extensions](#extensions)
+* [FAQ](#faq)
+* [Intentional Breakages](#intentional-breakages)
+* [SSH Tips and Tricks](#ssh-tips-and-tricks)
 
 ![a8 screenshot](https://lh4.googleusercontent.com/-PtipCpFvTcc/TvpPhtdtTeI/AAAAAAAADI0/tUVBvU3uLAA/s0-d/a8.png)
 
@@ -251,6 +254,8 @@ you require some special PIDA features, please go ahead and use PIDA.
 
 Probably, with difficulty. You'll need X, Gtk, DBus, all with Python support. (and possibly psychiatric help)
 
+----
+
 ## Intentional Breakages ##
 ⠠⠊⠝⠞⠑⠝⠞⠊⠕⠝⠁⠇ ⠠⠃⠗⠑⠁⠅⠁⠛⠑⠎
 
@@ -274,6 +279,8 @@ Abominade is to make an IDE that is tailor-made to me.
 * Glade/GTKBuilder is a pain
 * GTK's stock icons are totally useless
 * Statusbar/Toolbar/menubar
+
+----
 
 ## SSH Tips and Tricks ##
 ⠠⠎⠠⠎⠠⠓⠀⠠⠞⠊⠏⠎⠀⠁⠝⠙⠀⠠⠞⠗⠊⠉⠅⠎
