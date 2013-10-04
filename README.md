@@ -1,9 +1,3 @@
-```
-       __ 
-      (  )
- __.  ./' 
-(_/|_(__)
-```
 
 a8, the Abominade IDE
 --
@@ -22,8 +16,10 @@ or read #Installation.
 https://lh4.googleusercontent.com/-PtipCpFvTcc/TvpPhtdtTeI/AAAAAAAADI0/tUVBvU3uLAA/s0-d/a8.png
 
 
-Installation⠠⠊⠝⠎⠞⠁⠇⠇⠁⠞⠊⠕⠝
+Installation
 --
+
+⠠⠊⠝⠎⠞⠁⠇⠇⠁⠞⠊⠕⠝
 
     $ pip install a8
 
