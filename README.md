@@ -33,7 +33,7 @@ a8 is a bit configurable. Not so much because I never planned on using it in mor
 
 ### Configuration file
 
-Create a config file at ~/.a8/config.yaml
+Create a config file at `~/.a8/config.yaml`
 
 As the name suggests it will be in Yaml, as a map of key values:
 ```
@@ -220,12 +220,12 @@ def setup(app):
 
 ### Available Signals ###
 
-|| *Name*                || *Arguments*        || *Description*                                 ||
-|| `file-item-added`     || `filename`         || File item is shown in the file manager        ||
-|| `file-opened`         || `filename`         || File opened in the editor                     ||
-|| `file-closed`         || `filename`         || File closed in the editor                     ||
-|| `bookmark-item-added` || `filename`         || Bookmark to `filename` is added               ||
-|| `terminal-executed`   || `argv` `env` `cwd` || New terminal has been executed                ||
+| *Name*                | *Arguments*        | *Description*                                 |
+| `file-item-added`     | `filename`         | File item is shown in the file manager        |
+| `file-opened`         | `filename`         | File opened in the editor                     |
+| `file-closed`         | `filename`         | File closed in the editor                     |
+| `bookmark-item-added` | `filename`         | Bookmark to `filename` is added               |
+| `terminal-executed`   | `argv` `env` `cwd` | New terminal has been executed                |
 
 _If you need more signals, just let us know. Since they are not used internally, there is basically no cost._
 
