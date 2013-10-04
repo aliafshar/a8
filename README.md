@@ -1,10 +1,8 @@
 
-{{{
-       __ 
-      (  )
- __.  ./' 
-(_/|_(__)
-}}}
+           __ 
+          (  )
+     __.  ./' 
+    (_/|_(__)
 
 a8, the Abominade IDE
 --
@@ -14,11 +12,19 @@ License GPL v3 (http://www.gnu.org/copyleft/gpl.html)
 
 
 
+The One True IDE™, successor to the [http://pida.co.uk/ PIDA IDE]. An ultra-lightweight IDE, that embeds Vim, a terminal emulator, and a file browser and makes them work together.
 
-Installation
-⠠⠊⠝⠎⠞⠁⠇⠇⠁⠞⠊⠕⠝
+    pip install a8
 
-    # pip install a8
+or read [Installation].
+
+https://lh4.googleusercontent.com/-PtipCpFvTcc/TvpPhtdtTeI/AAAAAAAADI0/tUVBvU3uLAA/s0-d/a8.png
+
+
+Installation⠠⠊⠝⠎⠞⠁⠇⠇⠁⠞⠊⠕⠝
+--
+
+    $ pip install a8
 
 Remember the system dependencies:
 
@@ -26,7 +32,4 @@ Remember the system dependencies:
 
 (non debian distros, please drop me a line to add you.)
 
-What? http://code.google.com/p/abominade
-How? http://code.google.com/p/abominade/wiki/Installation
-Why? http://code.google.com/p/abominade/wiki/IntentionalBreakages
 
