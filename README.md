@@ -4,7 +4,9 @@
 (c) 2011, PIDA Authors
 License GPL v3 (http://www.gnu.org/copyleft/gpl.html)
 
-The One True IDE™, successor to the [http://pida.co.uk/ PIDA IDE]. An ultra-lightweight IDE, that embeds Vim, a terminal emulator, and a file browser and makes them work together.
+The One True IDE™, successor to the PIDA IDE. An ultra-lightweight IDE, that
+embeds Vim, a terminal emulator, and a file browser and makes them work
+together.
 
 * [Installation](#installation)
 * [Configuration](#configuration)
