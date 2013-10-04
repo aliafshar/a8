@@ -41,7 +41,6 @@ foo1: blah
 foo2:
     foo3: blah
 ```
-etc.
 
 ### Terminal Configuration ###
 
@@ -92,3 +91,141 @@ Useful for multiple screens:
 ```
 terminal_window: true
 ```
+
+## Keyboard Shortcuts ##
+
+⠠⠅⠑⠽⠃⠕⠁⠗⠙ ⠠⠎⠓⠕⠗⠞⠉⠥⠞⠎
+
+Keyboard shortucts are of two types:
+
+1. Internal a8 actions
+2. Custom shell commands
+
+Define keyboard shortcuts by creating the file:
+
+`~/.a8/shortcuts.yaml`
+
+This file should contain keys and values of the form:
+
+`<action>: <shortcut>`
+
+or of the form
+
+`key: <shortcut>`
+
+`[cmd: <command>]`
+
+`[cwd: <working directory>]`
+
+`[env: <environment>]`
+
+
+Where action is a string defining the action to be performed, and shortcut is a shortcut string.
+
+### Available actions ###
+
+Available actions are (with defaults):
+
+* `shell (<Alt>t)`
+* `focus_vim (<Alt>e)`
+* `focus_terminal (<Alt>r)`
+* `focus_buffers (<Alt>b)`
+* `focus_files (<Alt>m)`
+* `focus_terminals (<Alt>i)`
+* `focus_bookmarks (<Alt>k)`
+* `prev_buffer (<Alt>Up)`
+* `next_buffer (<Alt>Down)`
+* `prev_terminal (<Alt>Left)`
+* `next_terminal (<Alt>Right)`
+* `refresh_files (<Alt>g)`
+* `toggle_expanded_files (<Alt>x)` (0.11 and later)
+* `close_all_buffers (<Alt>c)`
+* `browse_home (<Alt>h)`
+
+### Other hotkeys ###
+
+* pressing `<Shift>Up` and `<Shift>Down` in terminals will jump to prev/next
+prompt (or at least the scrollbar position where you last hit Enter)
+
+### Shortcut format ###
+
+The format looks like `<Control>a` or `<Shift><Alt>F1` or `<Release>z` (the last
+one is for key release). The parser is fairly liberal and allows lower or upper
+case, and also abbreviations such as `<Ctl>` and `<Ctrl>`. Keys such as `Up`,
+`Down`, `Left`, `Right` etc are available, but be careful, the keypress will not
+pass through to the underlying app, terminal or Vim.
+
+### Custom shortcuts ###
+
+These are custom shell commands bound to a keyboard shortcut. Their format is different from internal a8 shortcuts. They should be part of a list in the value of the `custom` key. Each item in the list should define at least the key `key` as a shortcut string in the format above. Additionally they may define `cmd`, `cwd` and `env` keys. These are used to execute a new terminal with the command.
+
+### Example file ###
+
+An example shortcut file might look like:
+
+```
+shell:     <Control>o
+focus_vim: <Alt>Space
+
+custom:
+  - key: <Alt>j
+    cmd: ifconfig
+```
+
+## Extensions ##
+⠠⠑⠭⠞⠑⠝⠎⠊⠕⠝⠎
+
+A8 is slightly extensible, to the absolute minimal degree to add functionality without having the burden of a massive framework. This is achieved by the concepts of:
+
+1. Extensions
+2. Signals
+
+Since we are just using Python, all the a8 API is public to any Python code in the same process, and that is intentional. If you want to break it by abusing this, go for it, break it.
+
+Extensions are any Python module or instance with a callable `setup` attribute. The signature of `setup` should be:
+
+```
+def setup(app):
+   """My setup function."""
+```
+
+Of course this can be in an object where the signature would be:
+
+```
+class MyExtension(object):
+
+  def setup(self, app):
+    "My setup function."""
+```
+
+Extensions are listed in the configuration file under the `extensions` key, and should be importable names, such as `a8.a8_example_ext`, an example to get you started. If importing an attribute from a module, the `:` notation can be used, such as `path.mymodule:myattr`, which would be suitable for an instance as an extension.
+
+The app that is passed to the `setup` function is an instance of `a8.app.Abominade` which is the main monolith for a8, i.e., it has access to everything. Terrible, but intentional.
+
+The `setup` function can be used to create user interface features and to connect to signals, and as mentioned above, since all the API is public, anything can be achieved using this.
+
+### Signals ###
+
+A8 exports a number of signals for use by extensions. They are not used internally, so mostly behave as a no op. These are connected using `app.connect` and can be emitted by using `app.emit`. 
+
+`app.connect` takes a signal name, and a callback to be called. Callbacks are only passed keyword arguments, so it is important to get the names of the arguments correct. here is an example of connecting to the `file-saved` signal in a plugin. All available signals and arguments are listed below.
+
+```
+def on_file_saved(filename):
+  print filename, 'was saved.'
+
+def setup(app):
+  app.connect('file-saved', on_file_saved)
+```
+
+### Available Signals ###
+
+|| *Name*                || *Arguments*        || *Description*                                 ||
+|| `file-item-added`     || `filename`         || File item is shown in the file manager        ||
+|| `file-opened`         || `filename`         || File opened in the editor                     ||
+|| `file-closed`         || `filename`         || File closed in the editor                     ||
+|| `bookmark-item-added` || `filename`         || Bookmark to `filename` is added               ||
+|| `terminal-executed`   || `argv` `env` `cwd` || New terminal has been executed                ||
+
+_If you need more signals, just let us know. Since they are not used internally, there is basically no cost._
+
