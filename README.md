@@ -11,7 +11,7 @@ The One True IDE™, successor to the [http://pida.co.uk/ PIDA IDE]. An ultra-li
 
     pip install a8
 
-or read #Installation.
+or read #Installation
 
 https://lh4.googleusercontent.com/-PtipCpFvTcc/TvpPhtdtTeI/AAAAAAAADI0/tUVBvU3uLAA/s0-d/a8.png
 
