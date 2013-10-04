@@ -221,11 +221,12 @@ def setup(app):
 ### Available Signals ###
 
 | *Name*                | *Arguments*        | *Description*                                 |
+|-----------------------|--------------------|-----------------------------------------------|
 | `file-item-added`     | `filename`         | File item is shown in the file manager        |
 | `file-opened`         | `filename`         | File opened in the editor                     |
 | `file-closed`         | `filename`         | File closed in the editor                     |
 | `bookmark-item-added` | `filename`         | Bookmark to `filename` is added               |
 | `terminal-executed`   | `argv` `env` `cwd` | New terminal has been executed                |
 
-_If you need more signals, just let us know. Since they are not used internally, there is basically no cost._
+If you need more signals, just let us know. Since they are not used internally, there is basically no cost.
 
