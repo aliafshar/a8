@@ -4,14 +4,16 @@
 (c) 2011, PIDA Authors
 License GPL v3 (http://www.gnu.org/copyleft/gpl.html)
 
-
-
 The One True IDE™, successor to the [http://pida.co.uk/ PIDA IDE]. An ultra-lightweight IDE, that embeds Vim, a terminal emulator, and a file browser and makes them work together.
 
 * [Installation](#installation)
+* [Configuration](#configuration)
+* [Keyboard Shortcuts](#keyboard-shortcuts)
+* [Extensions](#extensions)
 
 ![a8 screenshot](https://lh4.googleusercontent.com/-PtipCpFvTcc/TvpPhtdtTeI/AAAAAAAADI0/tUVBvU3uLAA/s0-d/a8.png)
 
+----
 
 ## Installation ##
 
@@ -25,6 +27,8 @@ Remember the system dependencies:
 # apt-get install vim-gtk python-gtk2 python-vte python-dbus
 ```
 (non debian distros, please drop me a line to add you.)
+
+----
 
 ## Configuration
 
@@ -91,6 +95,7 @@ Useful for multiple screens:
 ```
 terminal_window: true
 ```
+----
 
 ## Keyboard Shortcuts ##
 
@@ -171,6 +176,7 @@ custom:
   - key: <Alt>j
     cmd: ifconfig
 ```
+----
 
 ## Extensions ##
 ⠠⠑⠭⠞⠑⠝⠎⠊⠕⠝⠎
@@ -230,3 +236,71 @@ def setup(app):
 
 If you need more signals, just let us know. Since they are not used internally, there is basically no cost.
 
+----
+
+## FAQ ##
+⠠⠋⠠⠁⠠⠟
+
+### What happened to my favourite PIDA feature? ###
+
+Abominade doesn't hope to replace [http://pida.co.uk PIDA], how could it? So if
+you require some special PIDA features, please go ahead and use PIDA.
+[Intentional Breakages](#intentional-breakages)
+
+### Does it work on a Mac? ###
+
+Probably, with difficulty. You'll need X, Gtk, DBus, all with Python support. (and possibly psychiatric help)
+
+## Intentional Breakages ##
+⠠⠊⠝⠞⠑⠝⠞⠊⠕⠝⠁⠇ ⠠⠃⠗⠑⠁⠅⠁⠛⠑⠎
+
+Features intentionally left out of Abominade that make it simpler, but
+essentially a tool written for me. If you want a real application, try
+[https://bitbucket.org/aafshar/pida-main/wiki/Home PIDA]. The motivation for
+Abominade is to make an IDE that is tailor-made to me.
+
+* Internationalization (I only ever use English)
+* Non-Vim editors (I only ever use Vim)
+* Language support (I don't find those outliners useful)
+* Version control support (Command line is enough)
+* Project support (Replaced with bookmarks)
+* Gui configuration (Plain text is enough)
+* Gui shortcut config (As Gui config)
+* Window management (Detaching, moving, hovering, floating)
+* Saving layout
+* Documentation (ok, so PIDA doesn't have any, either!)
+* Lots of options (No need to make stuff optional that I use.)
+* GTK's Actions are a pain
+* Glade/GTKBuilder is a pain
+* GTK's stock icons are totally useless
+* Statusbar/Toolbar/menubar
+
+## SSH Tips and Tricks ##
+⠠⠎⠠⠎⠠⠓⠀⠠⠞⠊⠏⠎⠀⠁⠝⠙⠀⠠⠞⠗⠊⠉⠅⠎
+
+Abominade's features work surprisingly well for working remotely over SSH.
+
+### SSHFS ###
+
+If you edit a lot of code on remote hosts, you can mount your project directory
+locally via SSHFS.
+
+If you then SSH directly from a mounted local dir to the corresponding remote
+dir, Abominade's terminal filename recognition will still catch relative
+filenames. This will break if you cd in your SSH session so that relative paths
+don't match your local current dir anymore, but if you configure SSH's
+!EscapeChar setting, you can suspend SSH, cd locally, and resume SSH.
+
+Another interesting trick is you start Abominade in an SSHFS dir while using
+a local session, the session will be shared with remote instances at the same
+path, and can be resumed on a different host.
+
+### Screen/tmux ###
+
+It's a good idea to use GNU screen or tmux for some terminals in Abominade's
+terminals pane, since it's easy to accidentally close Abominade
+and lose your terminal history.
+
+### Vim's Built-in SSH Support ###
+
+Haven't used this much in Abominade...
