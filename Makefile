@@ -2,9 +2,9 @@
 
 
 test-build: clean
-	virtualenv test-ve
+	virtualenv --system-site-packages test-ve
 	test-ve/bin/python setup.py install
-	cd test-ve && ./bin/a8
+	cd test-ve && ./bin/a8 --no-session
 
 
 sdist: clean MANIFEST.in
