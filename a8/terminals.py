@@ -44,6 +44,7 @@ class TerminalWindow(window.A8Window):
     self.hide()
     return True
 
+
 class TerminalConfiguration(object):
   """Configures a terminal."""
 
@@ -195,8 +196,7 @@ class TerminalView(delegates.SlaveView, lists.ListItem):
     self.box.pack_start(self.scrollbar, expand=False)
     self.box.pack_start(self.tools2, expand=False)
     self.create_tools()
-    # TODO(afshar) When 0.26 is in Ubuntu
-    #self.create_finder()
+    self.create_finder()
 
   def create_tools(self):
     self.popinout_button = resources.load_button('terminal_pop_out.png',
@@ -232,12 +232,15 @@ class TerminalView(delegates.SlaveView, lists.ListItem):
     self.copy_button.set_sensitive(False)
     self.create_killer()
     self.create_confirmer()
-    # TODO(afshar) When 0.26 is in Ubuntu
-    #self.tools.pack_start(self.find_button, expand=False)
+    # This should work in VTE 0.26+ but doesn't in python-vte 0.28
+    # so we make it conditional
+    # TODO(afshar): fix this when python-vte is updated
+    if hasattr(self.terminal, 'search_set_gregex'):
+      self.tools.pack_start(self.find_button, expand=False)
 
   def create_finder(self):
-    # TODO(afshar) When 0.26 is in Ubuntu
     self.finder = gtk.HBox()
+    self.finder.set_spacing(3)
     self.stack.pack_start(self.finder, expand=False)
     self.finder.set_no_show_all(True)
     self.find_text = gtk.Entry()
@@ -245,9 +248,9 @@ class TerminalView(delegates.SlaveView, lists.ListItem):
       'Find next')
     self.findprev_button = resources.load_button('resultset_previous.png',
       'Find previous')
-    self.finder.pack_start(self.findnext_button, expand=False)
     self.finder.pack_start(self.findprev_button, expand=False)
-    self.finder.pack_start(gtk.Label('Regular expression'), expand=False)
+    self.finder.pack_start(self.findnext_button, expand=False)
+    self.finder.pack_start(gtk.Label('re'), expand=False)
     self.finder.pack_start(self.find_text)
     for child in self.finder.get_children():
       child.show()
@@ -531,6 +534,23 @@ class TerminalView(delegates.SlaveView, lists.ListItem):
   def on_killer_shell_activate(self, menuitem):
     signum = menuitem.get_data('signum')
     psutil.Process(self.pid).send_signal(signum)
+
+  def on_find_button__clicked(self, button):
+    if button.get_active():
+      self.finder.show()
+    else:
+      self.finder.hide()
+
+  def on_findnext_button__clicked(self, button):
+    self.terminal.search_find_next()
+
+  def on_findprev_button__clicked(self, button):
+    self.terminal.search_find_previous()
+
+  def on_find_text__changed(self, text):
+    self.terminal.search_set_gregex(text.get_text())
+
+
 
 
 class TerminalManager(lists.ListView):
