@@ -23,7 +23,7 @@ define MANIFEST_BODY
 include a8/*.py
 include a8/data/a8.vim
 include a8/data/icons/*.png
-include README
+include README.md
 endef
 
 export MANIFEST_BODY
