@@ -8,7 +8,7 @@ import os, re, pwd
 
 import logbook
 import gtk, gobject, gtk.gdk, pango, vte
-import psutil, psutil.error
+import psutil
 from pygtkhelpers import delegates
 
 from a8 import resources, lists, contexts, window
@@ -344,7 +344,7 @@ class TerminalView(delegates.SlaveView, lists.ListItem):
         self.cwd = psutil.Process(self.pid).getcwd()
         self.label.set_text(self.cwd)
         return True
-      except psutil.error.AccessDenied:
+      except psutil.AccessDenied:
         # The process already vanished
         return False
 
