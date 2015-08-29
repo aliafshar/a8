@@ -341,7 +341,7 @@ class TerminalView(delegates.SlaveView, lists.ListItem):
       return False
     else:
       try:
-        self.cwd = psutil.Process(self.pid).getcwd()
+        self.cwd = psutil.Process(self.pid).cwd()
         self.label.set_text(self.cwd)
         return True
       except psutil.AccessDenied:
