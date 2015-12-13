@@ -70,7 +70,7 @@ class ApplicationWindow(A8Window):
     self.plugins.focus_delegate(self.model.terminals)
 
   def focus_buffers(self):
-    self.models.buffers.items.grab_focus()
+    self.model.buffers.items.grab_focus()
 
 
 class PluginTabs(delegates.SlaveView):
