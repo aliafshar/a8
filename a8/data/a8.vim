@@ -19,7 +19,9 @@ import os
 import sys
 # just in case, our pida might not be in the default path
 
-import gtk, gobject
+from gi.repository import Gtk, GObject, DBus
+gtk = Gtk
+gobject = GObject
 import dbus
 from dbus import SessionBus
 from dbus.service import Object, method, signal, BusName
