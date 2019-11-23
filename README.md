@@ -1,6 +1,8 @@
 
 # a8, the Abominade IDE #
 
+2019 Update: Enabled Vim-gtk3
+
 (c) 2011, PIDA Authors
 License GPL v3 (http://www.gnu.org/copyleft/gpl.html)
 
