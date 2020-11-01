@@ -1,4 +1,5 @@
-**NOTE: a8 is now b8**
+NOTE: a8 is now b8
+---
 
 b8 (bominade) is a rewrite of abominade using Python3 NeoVim and GTK3 so it will install on modern Linux distributions. This repository remains for posterity. Enjoy.
 
@@ -6,6 +7,8 @@ Get it here:
 
 * https://github.com/aliafshar/b8 (read only mirror)
 * https://gitlab.com/afshar-oss/b8 (real repository)
+
+b8 is not quite feature complete, but I already use it every day, so it's not too bad.
 
 ---
 
