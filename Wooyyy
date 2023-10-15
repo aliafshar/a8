@@ -1,0 +1,9 @@
+# Open a file in write mode (creates a new file if it doesn't exist)
+with open("message.txt", "w") as file:
+    # Write the message to the file (I miss you😚)
+    file.write("I love you Samantha Emia")
+
+# Close the file
+file.close()
+￼Enter
+Chess??
